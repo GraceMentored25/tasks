@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
+  <title>AI Support Ticket Classifier | MALT-AI-TICKET-01</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="badge" role="doc-subtitle">MALT-AI-TICKET-01 • 1,500€ - 3,500€</div>
+      <h1>AI Support Ticket Classifier & Triage</h1>
+      <p class="subtitle">Automated sentiment detection, tag routing, and priority scoring for customer success.</p>
+    </header>
+
+    <main class="main-content">
+      <section class="input-section">
+        <label for="ticketInput" class="label">Customer Ticket Text <span class="shortcut-hint">(Press Cmd/Ctrl + Enter to analyze)</span></label>
+        <textarea id="ticketInput" maxlength="10000" aria-label="Customer ticket message" placeholder="Paste customer email or message here... (e.g. 'URGENT: Our production database is down and billing failed!')"></textarea>
+        <div class="actions">
+          <button id="analyzeBtn" class="btn btn-primary" aria-label="Analyze ticket content">⚡ Analyze Ticket</button>
+          <button id="sampleBtn" class="btn btn-secondary" aria-label="Load sample support ticket">Load Sample Ticket</button>
+        </div>
+      </section>
+
+      <section class="results-section" id="resultsSection" aria-live="polite" aria-atomic="true">
+        <h2>Triage Analysis</h2>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <span class="metric-label">Priority Level</span>
+            <div id="priorityResult" class="metric-value badge-neutral" role="status" aria-label="Priority level">-</div>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Detected Category</span>
+            <div id="categoryResult" class="metric-value" role="status" aria-label="Detected category">-</div>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Sentiment Score</span>
+            <div id="sentimentResult" class="metric-value" role="status" aria-label="Sentiment score">-</div>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Execution Time</span>
+            <div id="executionTime" class="metric-value metric-fast" role="status" aria-label="Execution time">0.0 ms</div>
+          </div>
+        </div>
+
+        <div class="analysis-details">
+          <h3>Suggested Auto-Response</h3>
+          <div id="autoResponse" class="response-box" role="region" aria-label="Suggested auto-response draft">Submit a ticket to generate an AI triage response...</div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
