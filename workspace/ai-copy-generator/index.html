@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
+  <title>AI Copy Generator & SEO Scorer | MALT-AI-SEO-03</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="badge" role="doc-subtitle">MALT-AI-SEO-03 • 1,000€ - 2,500€</div>
+      <h1>AI Copywriting & SEO Readability Scorer</h1>
+      <p class="subtitle">Draft optimized marketing copy with instant readability and keyword density metrics.</p>
+    </header>
+
+    <main class="main-content">
+      <section class="input-section">
+        <div class="field-group">
+          <label for="targetKeyword" class="label">Target Keyword</label>
+          <input type="text" id="targetKeyword" maxlength="100" aria-label="Target SEO Keyword" placeholder="e.g. AI automation, workflow, productivity" value="AI automation">
+        </div>
+
+        <div class="field-group" style="margin-top: 1rem;">
+          <label for="copyInput" class="label">Draft Copy Content <span class="shortcut-hint">(Live scoring enabled)</span></label>
+          <textarea id="copyInput" maxlength="10000" aria-label="Draft copywriting text" placeholder="Type or paste your blog, ad, or page copy here..."></textarea>
+        </div>
+
+        <div class="actions">
+          <button id="generateBtn" class="btn btn-primary" aria-label="Generate AI copy variations">⚡ Generate AI Copy Variations</button>
+          <button id="sampleCopyBtn" class="btn btn-secondary" aria-label="Load sample copywriting content">Load Sample Copy</button>
+        </div>
+      </section>
+
+      <section class="results-section" aria-live="polite" aria-atomic="true">
+        <h2>SEO & Readability Analytics</h2>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <span class="metric-label">Readability Grade</span>
+            <div id="readabilityGrade" class="metric-value" role="status" aria-label="Readability Grade">0</div>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Keyword Density</span>
+            <div id="keywordDensity" class="metric-value" role="status" aria-label="Keyword Density">0.0%</div>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Word Count / Read Time</span>
+            <div id="wordCount" class="metric-value" role="status" aria-label="Word count and read time">0 words (0 min)</div>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Score calculation speed</span>
+            <div id="calcTime" class="metric-value metric-fast" role="status" aria-label="Calculation time">0.0 ms</div>
+          </div>
+        </div>
+
+        <h3>AI Generated Copy Variations</h3>
+        <div id="copyVariations" class="variations-container" role="region" aria-label="Generated AI Copy Variations">
+          <p class="empty-msg">Click 'Generate AI Copy Variations' to produce high-converting headlines and copy.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
