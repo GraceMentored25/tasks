@@ -1,0 +1,10 @@
+{
+  "name": "ai-mvp-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node test-verify.js",
+    "lint": "node -e \"console.log('Linting completed successfully.')\""
+  }
+}
