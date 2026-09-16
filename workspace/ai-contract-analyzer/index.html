@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assistant IA Analyse de Contrats Juridiques</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <style>
+    body { background-color: #0b0f19; color: #e2e8f0; font-family: system-ui, -apple-system, sans-serif; }
+    .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.08); }
+    .high-risk { border-left: 4px solid #ef4444; }
+    .medium-risk { border-left: 4px solid #f59e0b; }
+    .low-risk { border-left: 4px solid #10b981; }
+  </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 border-b border-slate-800 pb-4">
+      <div>
+        <a href="../../index.html" class="text-xs text-blue-400 hover:underline mb-1 inline-block">← Retour au Hub</a>
+        <h1 class="text-2xl md:text-3xl font-bold text-white flex items-center gap-2">
+          📜 Analyseur de Contrats & Documents IA
+        </h1>
+        <p class="text-slate-400 text-sm">Détection automatique des risques, clauses critiques & résumé juridique</p>
+      </div>
+      <div class="mt-4 md:mt-0 text-right">
+        <span class="text-xs bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700">
+          Malt Ref: 1 500 € - 3 500 €
+        </span>
+      </div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Input Column -->
+      <div class="lg:col-span-5 space-y-4">
+        <div class="glass-card rounded-xl p-5">
+          <div class="flex justify-between items-center mb-3">
+            <label for="contractText" class="font-semibold text-sm text-slate-200">Texte du contrat ou document</label>
+            <button id="loadSampleBtn" class="text-xs text-blue-400 hover:text-blue-300 underline">Exemple de contrat</button>
+          </div>
+          <textarea id="contractText" rows="14" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-slate-200 focus:outline-none focus:border-blue-500 font-mono" placeholder="Collez ici le texte de votre contrat (prestations, devis, NDA, travail...)..."></textarea>
+
+          <div class="mt-4 flex gap-2">
+            <button id="analyzeBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 px-4 rounded-lg text-sm transition-colors flex justify-center items-center gap-2">
+              <span>⚡ Lancer l'analyse IA</span>
+            </button>
+            <button id="clearBtn" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-lg text-sm transition-colors">
+              Effacer
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analysis Results Column -->
+      <div class="lg:col-span-7 space-y-4">
+        <!-- Metric Overview -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="glass-card p-4 rounded-xl text-center">
+            <span class="text-xs text-slate-400 uppercase tracking-wider block mb-1">Score de Risque</span>
+            <span id="riskScore" class="text-2xl font-extrabold text-slate-300">--</span>
+          </div>
+          <div class="glass-card p-4 rounded-xl text-center">
+            <span class="text-xs text-slate-400 uppercase tracking-wider block mb-1">Clauses Analysées</span>
+            <span id="clauseCount" class="text-2xl font-extrabold text-slate-300">--</span>
+          </div>
+          <div class="glass-card p-4 rounded-xl text-center">
+            <span class="text-xs text-slate-400 uppercase tracking-wider block mb-1">Temps Traitement</span>
+            <span id="executionTime" class="text-2xl font-extrabold text-blue-400">0ms</span>
+          </div>
+        </div>
+
+        <!-- Detailed Results Card -->
+        <div class="glass-card rounded-xl p-5">
+          <h2 class="font-bold text-lg text-white mb-4 flex items-center justify-between">
+            <span>Rapport & Clauses Détectées</span>
+            <button id="exportBtn" disabled class="text-xs bg-slate-800 text-slate-400 px-3 py-1 rounded hover:bg-slate-700 disabled:opacity-50">
+              📥 Exporter Rapport
+            </button>
+          </h2>
+
+          <div id="resultsContainer" class="space-y-3 max-h-96 overflow-y-auto pr-1">
+            <div class="text-center py-12 text-slate-500 text-sm">
+              Collez un document et cliquez sur "Lancer l'analyse" pour afficher le rapport de risques.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /*
+     * Bolt ⚡ Performance Optimization:
+     * - Client-side analysis results are memoized using a Hash Map cache to prevent duplicate regex processing on repeated inputs.
+     * - Execution time measured via performance.now().
+     */
+    const analysisCache = new Map();
+
+    const sampleContract = `CONTRAT DE PRESTATION DE SERVICES
+Entre la société TECH SERVICES SAS et le Client.
+
+ARTICLE 1 - OBJET
+Le Prestataire s'engage à fournir un assistant IA sur mesure.
+
+ARTICLE 2 - RESPONSABILITÉ ET PÉNALITÉS
+En cas de retard de livraison supérieur à 2 jours, le Prestataire sera soumis à une pénalité forfaitaire de 5 000 € par jour de retard, sans plafonnement. Le Prestataire assume une responsabilité illimitée pour tout dommage direct ou indirect.
+
+ARTICLE 3 - PROPRIÉTÉ INTELLECTUELLE
+Tous les algorithmes et données créés deviennent la propriété exclusive du Client dès le premier virement.
+
+ARTICLE 4 - RÉSILIATION
+Le Client peut résilier sans préavis ni indemnité à tout moment. En revanche, le Prestataire doit respecter un préavis de 6 mois.
+
+ARTICLE 5 - JURIDICTION ET LOI APPLICABLE
+Le présent contrat est soumis au droit français. Tout litige sera porté devant le Tribunal de Commerce de Paris.`;
+
+    const sampleBtn = document.getElementById('loadSampleBtn');
+    const contractInput = document.getElementById('contractText');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const riskScoreEl = document.getElementById('riskScore');
+    const clauseCountEl = document.getElementById('clauseCount');
+    const executionTimeEl = document.getElementById('executionTime');
+
+    sampleBtn.addEventListener('click', () => {
+      contractInput.value = sampleContract;
+    });
+
+    clearBtn.addEventListener('click', () => {
+      contractInput.value = '';
+      resultsContainer.innerHTML = '<div class="text-center py-12 text-slate-500 text-sm">Collez un document et cliquez sur "Lancer l\'analyse" pour afficher le rapport de risques.</div>';
+      riskScoreEl.innerText = '--';
+      clauseCountEl.innerText = '--';
+      executionTimeEl.innerText = '0ms';
+      exportBtn.disabled = true;
+    });
+
+    function fastHash(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = (hash << 5) - hash + str.charCodeAt(i);
+        hash |= 0;
+      }
+      return hash;
+    }
+
+    function analyzeContractText(text) {
+      const hashKey = fastHash(text);
+      if (analysisCache.has(hashKey)) {
+        return { ...analysisCache.get(hashKey), cached: true };
+      }
+
+      const paragraphs = text.split(/\n+/).filter(p => p.trim().length > 0);
+      let highRisks = 0;
+      let mediumRisks = 0;
+      const clauses = [];
+
+      paragraphs.forEach((p, idx) => {
+        let level = 'low';
+        let category = 'Général';
+        let recommendation = 'Clause standard.';
+
+        const lower = p.toLowerCase();
+        if (lower.includes('pénalité') || lower.includes('illimitée') || lower.includes('sans préavis') || lower.includes('5 000')) {
+          level = 'high';
+          category = 'Risque Majeur / Financier';
+          recommendation = 'Négocier un plafonnement de la responsabilité et des pénalités raisonnables.';
+          highRisks++;
+        } else if (lower.includes('propriété') || lower.includes('résiliation') || lower.includes('préavis')) {
+          level = 'medium';
+          category = 'Propriété / Engagements';
+          recommendation = 'Vérifier la réciprocité des préavis et des droits de propriété.';
+          mediumRisks++;
+        }
+
+        clauses.push({ id: idx + 1, text: p, level, category, recommendation });
+      });
+
+      const score = Math.max(0, 100 - (highRisks * 30 + mediumRisks * 10));
+      const result = { clauses, score, totalClauses: paragraphs.length, highRisks, mediumRisks };
+      analysisCache.set(hashKey, result);
+      return { ...result, cached: false };
+    }
+
+    analyzeBtn.addEventListener('click', () => {
+      const text = contractInput.value.trim();
+      if (!text) {
+        alert('Veuillez coller un texte de contrat.');
+        return;
+      }
+
+      const startTime = performance.now();
+      const analysis = analyzeContractText(text);
+      const endTime = performance.now();
+      const duration = (endTime - startTime).toFixed(1);
+
+      // Render score
+      const score = analysis.score;
+      riskScoreEl.innerText = `${score}/100`;
+      riskScoreEl.className = `text-2xl font-extrabold ${score < 50 ? 'text-red-400' : score < 80 ? 'text-yellow-400' : 'text-emerald-400'}`;
+
+      clauseCountEl.innerText = analysis.totalClauses;
+      executionTimeEl.innerText = `${duration}ms ${analysis.cached ? '⚡ (Cache)' : ''}`;
+
+      // Render clause cards
+      resultsContainer.innerHTML = '';
+      analysis.clauses.forEach(c => {
+        const card = document.createElement('div');
+        const borderClass = c.level === 'high' ? 'high-risk bg-red-950/20' : c.level === 'medium' ? 'medium-risk bg-amber-950/20' : 'low-risk bg-slate-900/40';
+        const badgeColor = c.level === 'high' ? 'bg-red-900/60 text-red-200' : c.level === 'medium' ? 'bg-amber-900/60 text-amber-200' : 'bg-emerald-900/60 text-emerald-200';
+
+        card.className = `p-4 rounded-r-lg ${borderClass} mb-3 text-sm`;
+        card.innerHTML = `
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-xs font-semibold px-2 py-0.5 rounded ${badgeColor}">${c.category}</span>
+            <span class="text-xs text-slate-500">Clause #${c.id}</span>
+          </div>
+          <p class="text-slate-200 mb-2 font-mono text-xs leading-relaxed">${c.text}</p>
+          <div class="text-xs text-slate-400 bg-slate-950/40 p-2 rounded border border-slate-800">
+            <strong class="text-slate-300">💡 Conseil IA:</strong> ${c.recommendation}
+          </div>
+        `;
+        resultsContainer.appendChild(card);
+      });
+
+      exportBtn.disabled = false;
+    });
+
+    exportBtn.addEventListener('click', () => {
+      const text = contractInput.value;
+      const analysis = analyzeContractText(text);
+      const report = {
+        title: "Rapport d'analyse de contrat IA",
+        date: new Date().toISOString(),
+        score: analysis.score,
+        clausesCount: analysis.totalClauses,
+        clauses: analysis.clauses
+      };
+      const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'rapport-analyse-contrat.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>
