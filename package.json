@@ -1,0 +1,8 @@
+{
+  "name": "ai-mvps-workspace",
+  "version": "1.0.0",
+  "description": "Commercial AI MVPs Workspace",
+  "scripts": {
+    "test": "node test-verify.js"
+  }
+}
