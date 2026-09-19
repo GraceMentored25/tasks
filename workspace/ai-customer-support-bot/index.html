@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bot Support IA Client - Commercial MVP</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --accent: #3b82f6;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 800px;
+      background: var(--card);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    header {
+      border-bottom: 1px solid #334155;
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .badge {
+      background: #2563eb;
+      color: #fff;
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    #chat-box {
+      height: 350px;
+      overflow-y: auto;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 16px;
+      background: #0f172a;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .message {
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      line-height: 1.4;
+    }
+    .user-msg {
+      align-self: flex-end;
+      background: var(--accent);
+      color: white;
+    }
+    .bot-msg {
+      align-self: flex-start;
+      background: #334155;
+      color: #f8fafc;
+    }
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    input {
+      flex: 1;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: white;
+      font-size: 15px;
+    }
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #2563eb;
+    }
+    .stats {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge">MVP Malt Ref: 3,000€ - 8,000€</span>
+      <h2>⚡ Bot Support IA Client</h2>
+      <p style="color: var(--muted); font-size: 14px;">Assistant support automatisé haute performance avec recherche sémantique en mémoire.</p>
+    </header>
+
+    <div id="chat-box">
+      <div class="message bot-msg">Bonjour ! Je suis votre assistant virtuel support client. Comment puis-je vous aider aujourd'hui ?</div>
+    </div>
+
+    <form id="chat-form" class="input-row">
+      <input type="text" id="user-input" placeholder="Posez votre question (ex: remboursement, livraison, facture)..." required>
+      <button type="submit" id="send-btn">Envoyer</button>
+    </form>
+    <div id="perf-metrics" class="stats">Temps de réponse de la recherche : 0ms (Cache: inactif)</div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
