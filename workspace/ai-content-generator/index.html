@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Platform AI Content Generator MVP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans">
+  <!-- Header -->
+  <header class="bg-slate-800 border-b border-slate-700 px-6 py-4 flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center font-bold text-white shadow-lg shadow-emerald-500/30">
+        <i class="fa-solid fa-pen-nib text-lg"></i>
+      </div>
+      <div>
+        <h1 class="font-bold text-lg text-white">ContentCraft AI</h1>
+        <p class="text-xs text-slate-400">Multi-Channel AI Content Studio (Commercial Malt Solution)</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-4 text-xs">
+      <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+        Generator Engine v1.8
+      </span>
+      <span class="text-slate-400">Prix Moyen Prestation: <strong class="text-emerald-400">1 000€ - 2 500€</strong></span>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Controls Sidebar -->
+    <section class="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col gap-4 shadow-xl">
+      <h2 class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+        <i class="fa-solid fa-sliders text-emerald-400"></i> Paramètres de Génération
+      </h2>
+
+      <div>
+        <label for="select-channel" class="block text-xs font-medium text-slate-400 mb-1">Plateforme Cible</label>
+        <select id="select-channel" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 transition">
+          <option value="linkedin">Post LinkedIn Pro</option>
+          <option value="twitter">Thread Twitter / X</option>
+          <option value="email">Email de Prospection / Vente</option>
+          <option value="blog">Plan d'Article de Blog</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="select-tone" class="block text-xs font-medium text-slate-400 mb-1">Ton & Style</label>
+        <select id="select-tone" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 transition">
+          <option value="professional">Professionnel & Expert</option>
+          <option value="enthusiastic">Enthousiaste & Engageant</option>
+          <option value="persuasive">Persuasif & Vendeur</option>
+          <option value="concise">Inspirant & Synthétique</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="input-topic" class="block text-xs font-medium text-slate-400 mb-1">Sujet principal / Mots-clés</label>
+        <textarea id="input-topic" rows="4" placeholder="Ex: Lancement de notre nouveau service d'automatisation IA pour les PME..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"></textarea>
+      </div>
+
+      <button id="btn-generate" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-4 py-3 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 mt-2">
+        <i class="fa-solid fa-bolt"></i> Générer le Contenu Instantanément
+      </button>
+    </section>
+
+    <!-- Output Preview Panel -->
+    <section class="lg:col-span-2 bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col gap-4 shadow-xl">
+      <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+        <div class="flex items-center gap-2">
+          <span id="output-badge" class="px-2.5 py-1 rounded-lg text-xs bg-emerald-500/10 text-emerald-400 font-semibold border border-emerald-500/20">
+            LinkedIn Post
+          </span>
+          <span id="output-stats" class="text-xs text-slate-400">0 mots | 0 caractères</span>
+        </div>
+        <button id="btn-copy" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+          <i class="fa-regular fa-copy"></i> Copier
+        </button>
+      </div>
+
+      <!-- Generated Text Area -->
+      <div class="flex-1 bg-slate-900 border border-slate-700/80 rounded-xl p-4 min-h-[300px] flex flex-col">
+        <div id="output-content" class="text-xs md:text-sm text-slate-200 leading-relaxed space-y-3 whitespace-pre-line font-sans flex-1">
+          Remplissez le sujet ci-contre puis cliquez sur "Générer le Contenu" pour créer votre texte prêt à publier.
+        </div>
+      </div>
+
+      <!-- Metrics Footer -->
+      <div class="flex justify-between items-center text-xs text-slate-500 bg-slate-900/40 p-3 rounded-xl">
+        <span>Temps de génération: <strong id="gen-time" class="text-emerald-400 font-mono">0ms</strong></span>
+        <span>Moteur: <strong class="text-slate-400">Template Engine FastCache</strong></span>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
