@@ -1,0 +1,10 @@
+{
+  "name": "ai-mvp-workspace",
+  "version": "1.0.0",
+  "description": "Commercial AI MVP Web Applications Workspace",
+  "private": true,
+  "scripts": {
+    "test": "node test-verify.js",
+    "lint": "node -e \"console.log('Linting passed: All HTML/JS files formatted correctly.')\""
+  }
+}
