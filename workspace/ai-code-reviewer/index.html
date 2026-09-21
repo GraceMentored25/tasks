@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; font-src 'self' https:;">
+  <title>AI Code Reviewer & Auditor - MVP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans flex flex-col">
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-2xl">⚡</span>
+      <h1 class="text-xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+        CodeAudit AI
+      </h1>
+    </div>
+    <span class="text-xs font-mono bg-emerald-900/50 text-emerald-300 border border-emerald-700/50 px-2.5 py-1 rounded-full">
+      Bolt-Optimized MVP
+    </span>
+  </header>
+
+  <main class="flex-1 max-w-6xl mx-auto w-full p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <section class="bg-slate-800/60 border border-slate-700/60 rounded-xl p-6 flex flex-col gap-4 shadow-xl">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-slate-200">Extrait de Code à Analyser</h2>
+        <span id="char-count" class="text-xs font-mono text-slate-400">0 caractères</span>
+      </div>
+
+      <textarea id="code-input" rows="12" placeholder="// Collez votre code JavaScript ou Python ici...
+function fetchUserData(id) {
+  let query = 'SELECT * FROM users WHERE id = ' + id;
+  return db.execute(query);
+}" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 leading-relaxed"></textarea>
+
+      <button id="audit-btn" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2.5 px-4 rounded-lg transition-all shadow-lg flex items-center justify-center gap-2">
+        <span>Lancer l'Analyse IA</span>
+        <span id="cache-hit-tag" class="hidden text-[10px] bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded border border-emerald-700">CACHE HIT</span>
+      </button>
+    </section>
+
+    <section class="bg-slate-800/60 border border-slate-700/60 rounded-xl p-6 flex flex-col gap-4 shadow-xl">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-slate-200">Rapport d'Audit IA</h2>
+        <span id="audit-status" class="text-xs font-mono text-emerald-400">En attente</span>
+      </div>
+
+      <div class="space-y-4">
+        <div class="bg-slate-950 border border-slate-800 rounded-lg p-4">
+          <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Diagnostic Sécurité & Performance</div>
+          <div id="audit-results" class="text-xs font-mono text-slate-300 leading-relaxed min-h-[140px] whitespace-pre-wrap">
+// Le rapport d'audit IA s'affichera ici...
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 text-xs font-mono">
+          <div class="bg-slate-900 p-3 rounded border border-slate-800">
+            <span class="text-slate-500 block">Score de Maintenabilité</span>
+            <span id="score-val" class="text-xl font-bold text-emerald-400">-- / 100</span>
+          </div>
+          <div class="bg-slate-900 p-3 rounded border border-slate-800">
+            <span class="text-slate-500 block">Risques Détectés</span>
+            <span id="risk-count" class="text-xl font-bold text-amber-400">--</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-800 py-3 text-center text-xs text-slate-500">
+    Commercial AI MVP • Bolt ⚡ Optimized Architecture
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

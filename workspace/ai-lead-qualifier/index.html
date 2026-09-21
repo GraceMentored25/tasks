@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; font-src 'self' https:;">
+  <title>AI Lead Qualifier & Scoring - MVP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans flex flex-col">
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-2xl">⚡</span>
+      <h1 class="text-xl font-bold bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
+        LeadScore AI Agent
+      </h1>
+    </div>
+    <span class="text-xs font-mono bg-amber-900/50 text-amber-300 border border-amber-700/50 px-2.5 py-1 rounded-full">
+      Bolt-Optimized MVP
+    </span>
+  </header>
+
+  <main class="flex-1 max-w-5xl mx-auto w-full p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+    <section class="bg-slate-800/60 border border-slate-700/60 rounded-xl p-6 flex flex-col gap-4 shadow-xl">
+      <h2 class="text-lg font-semibold text-slate-200">Profil du Lead B2B</h2>
+
+      <div>
+        <label for="company-input" class="block text-xs font-medium text-slate-400 mb-1">Nom de l'Entreprise</label>
+        <input id="company-input" type="text" placeholder="Acme Corp"
+          class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500">
+      </div>
+
+      <div>
+        <label for="budget-select" class="block text-xs font-medium text-slate-400 mb-1">Budget Déclaré</label>
+        <select id="budget-select" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500">
+          <option value="low">&lt; 5 000 €</option>
+          <option value="medium">5 000 € - 20 000 €</option>
+          <option value="high">&gt; 20 000 €</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="need-desc" class="block text-xs font-medium text-slate-400 mb-1">Besoin exprimé / Message</label>
+        <textarea id="need-desc" rows="4" placeholder="Ex: Nous cherchons à automatiser notre support client avec une IA sur mesure..."
+          class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 leading-relaxed"></textarea>
+      </div>
+
+      <button id="qualify-btn" class="bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold py-2.5 px-4 rounded-lg transition-all shadow-lg flex items-center justify-center gap-2">
+        <span>Évaluer & Qualifier le Lead</span>
+        <span id="lead-cache-badge" class="hidden text-[10px] bg-amber-950 text-amber-300 px-2 py-0.5 rounded border border-amber-700">CACHE HIT</span>
+      </button>
+    </section>
+
+    <section class="bg-slate-800/60 border border-slate-700/60 rounded-xl p-6 flex flex-col gap-4 shadow-xl">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-slate-200">Score & Recommandation Commerciale</h2>
+        <span id="lead-perf" class="text-xs font-mono text-amber-400">Prêt</span>
+      </div>
+
+      <div class="bg-slate-950 border border-slate-800 rounded-lg p-4 flex flex-col items-center justify-center gap-2 text-center">
+        <span class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Score d'Appétence Client</span>
+        <div id="score-display" class="text-4xl font-extrabold text-amber-400 font-mono">0 / 100</div>
+        <span id="lead-tier" class="text-xs px-3 py-1 rounded-full font-medium bg-slate-800 text-slate-400">Non évalué</span>
+      </div>
+
+      <div class="space-y-3">
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3">
+          <div class="text-xs font-semibold text-slate-400 mb-1">Prochaine Action Suggérée</div>
+          <div id="action-recommendation" class="text-xs text-slate-300 leading-relaxed">
+            Remplissez les informations ci-contre pour obtenir la qualification automatique.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-800 py-3 text-center text-xs text-slate-500">
+    Commercial AI MVP • Bolt ⚡ Optimized Architecture
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
