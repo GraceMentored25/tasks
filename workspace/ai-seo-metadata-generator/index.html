@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; font-src 'self' https:;">
+  <title>AI SEO & Metadata Generator - MVP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans flex flex-col">
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-2xl">⚡</span>
+      <h1 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent">
+        SEO Meta-Boost AI
+      </h1>
+    </div>
+    <span class="text-xs font-mono bg-blue-900/50 text-blue-300 border border-blue-700/50 px-2.5 py-1 rounded-full">
+      Bolt-Optimized MVP
+    </span>
+  </header>
+
+  <main class="flex-1 max-w-5xl mx-auto w-full p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+    <section class="bg-slate-800/60 border border-slate-700/60 rounded-xl p-6 flex flex-col gap-4 shadow-xl">
+      <h2 class="text-lg font-semibold text-slate-200">Paramètres de la Page</h2>
+
+      <div>
+        <label for="url-input" class="block text-xs font-medium text-slate-400 mb-1">URL du site / Page</label>
+        <input id="url-input" type="url" placeholder="https://example.com/mon-produit"
+          class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <div>
+        <label for="keywords-input" class="block text-xs font-medium text-slate-400 mb-1">Mots-clés Cibles (séparés par des virgules)</label>
+        <input id="keywords-input" type="text" placeholder="intelligence artificielle, seo, automatisation"
+          class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <div>
+        <label for="tone-select" class="block text-xs font-medium text-slate-400 mb-1">Ton Rédactionnel</label>
+        <select id="tone-select" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="professional">Professionnel & Persuasif</option>
+          <option value="e-commerce">E-commerce / Conversion</option>
+          <option value="tech">Tech & B2B Innovation</option>
+        </select>
+      </div>
+
+      <button id="generate-btn" class="mt-2 bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 px-4 rounded-lg transition-all shadow-lg flex items-center justify-center gap-2">
+        <span>Générer Métadonnées SEO</span>
+        <span id="speed-badge" class="hidden text-[10px] bg-blue-900 px-2 py-0.5 rounded text-blue-200">CACHE HIT</span>
+      </button>
+    </section>
+
+    <section class="bg-slate-800/60 border border-slate-700/60 rounded-xl p-6 flex flex-col gap-4 shadow-xl">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-slate-200">Aperçu Google (SERP)</h2>
+        <span id="perf-metrics" class="text-xs font-mono text-emerald-400">Prêt</span>
+      </div>
+
+      <div class="bg-slate-950 border border-slate-800 rounded-lg p-4 font-sans text-left">
+        <div id="serp-url" class="text-xs text-slate-400 truncate">https://example.com/mon-produit</div>
+        <div id="serp-title" class="text-blue-400 font-medium text-base hover:underline cursor-pointer truncate mt-0.5">
+          Titre SEO Optimisé - Généré par IA
+        </div>
+        <div id="serp-desc" class="text-slate-300 text-xs mt-1 leading-relaxed">
+          Saisissez l'URL et les mots-clés ci-contre pour générer une méta-description captivante et optimisée pour le référencement naturel.
+        </div>
+      </div>
+
+      <div class="border-t border-slate-700/50 pt-4 flex flex-col gap-2">
+        <h3 class="text-sm font-medium text-slate-300">Analyse de Performance SEO</h3>
+        <div class="grid grid-cols-2 gap-3 text-xs font-mono">
+          <div class="bg-slate-900 p-2.5 rounded border border-slate-800">
+            <span class="text-slate-500 block">Longueur Titre</span>
+            <span id="title-length" class="text-emerald-400 font-bold">0 / 60 car.</span>
+          </div>
+          <div class="bg-slate-900 p-2.5 rounded border border-slate-800">
+            <span class="text-slate-500 block">Longueur Description</span>
+            <span id="desc-length" class="text-emerald-400 font-bold">0 / 160 car.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-800 py-3 text-center text-xs text-slate-500">
+    Commercial AI MVP • Bolt ⚡ Optimized Architecture
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
