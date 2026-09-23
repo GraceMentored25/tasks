@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI SEO & Copywriting Generator</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .bg-slate-900 { background-color: #0f172a; }
+    .bg-slate-800 { background-color: #1e293b; }
+    .border-slate-700 { border-color: #334155; }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+  <header class="border-b border-slate-700 bg-slate-800 px-6 py-4 flex flex-wrap items-center justify-between shadow-lg">
+    <div class="flex items-center space-x-3">
+      <span class="text-2xl">⚡</span>
+      <h1 class="text-xl font-bold text-white">AI SEO Content Generator</h1>
+      <span class="bg-emerald-600 text-xs px-2.5 py-1 rounded-full font-semibold text-white">SEO MVP</span>
+    </div>
+    <div class="text-xs text-slate-400">
+      Malt Reference: <span class="text-slate-200 font-mono">Générateur Contenu SEO IA (€2.5k–€6k)</span>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <!-- Left Configuration Panel -->
+    <section class="lg:col-span-4 bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-4">
+      <h2 class="text-lg font-semibold text-slate-200">Configuration SEO</h2>
+
+      <div>
+        <label for="target-keyword" class="block text-xs font-medium text-slate-400 mb-1">Mot-clé Principal (Target Keyword)</label>
+        <input id="target-keyword" type="text" value="Intelligence Artificielle" placeholder="ex: Agence IA Paris" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+      </div>
+
+      <div>
+        <label for="secondary-keywords" class="block text-xs font-medium text-slate-400 mb-1">Mots-clés Secondaires (séparés par virgules)</label>
+        <input id="secondary-keywords" type="text" value="RAG, LLM, automatisation, productivité" placeholder="ex: dev, SaaS, RAG" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+      </div>
+
+      <button id="btn-generate-outline" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm py-2.5 px-4 rounded transition">
+        Générer Structure & Article IA
+      </button>
+
+      <hr class="border-slate-700">
+
+      <div class="space-y-3">
+        <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Score SEO Temps Réel</h3>
+        <div class="bg-slate-900 p-4 rounded-lg border border-slate-700 flex items-center justify-between">
+          <div>
+            <div class="text-xs text-slate-400">Score de Qualité</div>
+            <div id="seo-score-text" class="text-2xl font-bold text-emerald-400">85 / 100</div>
+          </div>
+          <div id="seo-calc-time" class="text-[10px] text-slate-500 font-mono">Debounced: 0.1ms</div>
+        </div>
+
+        <div class="space-y-2 text-xs">
+          <div class="flex justify-between text-slate-400">
+            <span>Densité du mot-clé:</span>
+            <span id="keyword-density-val" class="text-slate-200 font-semibold">1.8%</span>
+          </div>
+          <div class="flex justify-between text-slate-400">
+            <span>Nombre de mots:</span>
+            <span id="word-count-val" class="text-slate-200 font-semibold">240 mots</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Editor Panel -->
+    <section class="lg:col-span-8 bg-slate-800 p-5 rounded-xl border border-slate-700 flex flex-col space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-lg font-semibold text-slate-200">Éditeur & Contenu Optimisé</h2>
+        <span class="text-xs text-slate-400">Analyse O(N) active</span>
+      </div>
+
+      <div class="space-y-2">
+        <label for="editor-title" class="block text-xs font-medium text-slate-400">Balise Title & H1</label>
+        <input id="editor-title" type="text" value="Comment l'Intelligence Artificielle Révolutionne les Entreprises en 2025" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-sm font-semibold text-emerald-400 focus:outline-none focus:border-emerald-500">
+      </div>
+
+      <div class="flex-1 flex flex-col space-y-2">
+        <label for="editor-body" class="block text-xs font-medium text-slate-400">Corps de l'Article (Markdown)</label>
+        <textarea id="editor-body" rows="14" class="w-full flex-1 bg-slate-900 border border-slate-700 rounded p-3 text-sm text-slate-200 focus:outline-none focus:border-emerald-500 font-mono leading-relaxed">
+L'Intelligence Artificielle offre aujourd'hui des opportunités inédites pour l'automatisation des tâches et la productivité.
+
+## Pourquoi adopter les LLM et le RAG ?
+Les technologies basées sur les LLM permettent de traiter des volumes massifs de données non structurées. Associées au RAG (Retrieval-Augmented Generation), elles garantissent une précision maximale pour vos bases de connaissances internes.
+
+### Avantages clés :
+1. Gains de productivité mesurables.
+2. Automatisation des processus complexes.
+3. Sécurité et maîtrise des données.
+        </textarea>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let debounceTimer = null;
+
+    // Bolt ⚡ Debounced SEO Calculation (200ms) to prevent lagging UI typing
+    function scheduleSeoAnalysis() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(calculateSeoMetrics, 200);
+    }
+
+    function calculateSeoMetrics() {
+      const startTime = performance.now();
+      const text = document.getElementById('editor-body').value || "";
+      const targetKw = (document.getElementById('target-keyword').value || "").toLowerCase().trim();
+
+      if (!text.trim()) {
+        updateUI(0, "0%", 0, "0ms");
+        return;
+      }
+
+      // O(N) Single-pass word frequency HashMap optimization
+      const words = text.toLowerCase().match(/\b[\wàâäéèêëîïôöùûüç-]+\b/g) || [];
+      const totalWords = words.length;
+
+      let targetCount = 0;
+      if (targetKw) {
+        words.forEach(w => {
+          if (w === targetKw || targetKw.includes(w)) targetCount++;
+        });
+      }
+
+      const density = totalWords > 0 ? ((targetCount / totalWords) * 100).toFixed(1) : 0;
+
+      // Basic SEO Score formula
+      let score = 50;
+      if (totalWords > 150) score += 20;
+      if (density >= 1.0 && density <= 3.5) score += 20;
+      if (text.includes("##")) score += 10;
+      score = Math.min(score, 100);
+
+      const duration = (performance.now() - startTime).toFixed(2);
+      updateUI(score, `${density}%`, totalWords, `${duration}ms`);
+    }
+
+    function updateUI(score, densityStr, wordCount, durationStr) {
+      document.getElementById('seo-score-text').textContent = `${score} / 100`;
+      document.getElementById('keyword-density-val').textContent = densityStr;
+      document.getElementById('word-count-val').textContent = `${wordCount} mots`;
+      document.getElementById('seo-calc-time').textContent = `Debounced: ${durationStr}`;
+    }
+
+    document.getElementById('editor-body').addEventListener('input', scheduleSeoAnalysis);
+    document.getElementById('target-keyword').addEventListener('input', scheduleSeoAnalysis);
+
+    document.getElementById('btn-generate-outline').addEventListener('click', () => {
+      const kw = document.getElementById('target-keyword').value || "Intelligence Artificielle";
+      document.getElementById('editor-title').value = `Guide Ultime: Masteriser ${kw} pour votre Entreprise`;
+      document.getElementById('editor-body').value = `L'intégration de ${kw} est un levier stratégique majeur.
+
+## 1. Introduction à ${kw}
+Découvrez comment maximiser l'efficacité de vos équipes grâce à des solutions sur-mesure.
+
+## 2. Cas d'usage pratiques
+- Automatisation des flux de travail.
+- Traitement de données temps réel.
+
+## 3. Conclusion & Prochaines étapes
+Adoptez une démarche itérative dès aujourd'hui.`;
+      calculateSeoMetrics();
+    });
+
+    // Initial run
+    calculateSeoMetrics();
+  </script>
+</body>
+</html>

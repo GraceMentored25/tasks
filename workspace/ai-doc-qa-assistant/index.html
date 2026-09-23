@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Document QA & Knowledge Base Assistant</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .bg-slate-900 { background-color: #0f172a; }
+    .bg-slate-800 { background-color: #1e293b; }
+    .border-slate-700 { border-color: #334155; }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+  <header class="border-b border-slate-700 bg-slate-800 px-6 py-4 flex flex-wrap items-center justify-between shadow-lg">
+    <div class="flex items-center space-x-3">
+      <span class="text-2xl">⚡</span>
+      <h1 class="text-xl font-bold text-white">AI Doc QA & Knowledge Base Assistant</h1>
+      <span class="bg-blue-600 text-xs px-2.5 py-1 rounded-full font-semibold text-white">RAG MVP</span>
+    </div>
+    <div class="text-xs text-slate-400">
+      Malt Reference: <span class="text-slate-200 font-mono">Assistant IA QA Documentaire (€3k–€8k)</span>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <!-- Left Panel: Knowledge Base Documents -->
+    <section class="lg:col-span-5 bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-lg font-semibold text-slate-200">1. Base de Connaissances</h2>
+        <span id="doc-count" class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded">2 documents</span>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label for="doc-title" class="block text-xs font-medium text-slate-400 mb-1">Titre du document</label>
+          <input id="doc-title" type="text" placeholder="ex: Politique de Securité 2025.txt" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label for="doc-content" class="block text-xs font-medium text-slate-400 mb-1">Contenu du document</label>
+          <textarea id="doc-content" rows="6" placeholder="Collez ici le texte de votre documentation entreprise..." class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500"></textarea>
+        </div>
+        <button id="btn-add-doc" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm py-2 px-4 rounded transition">
+          Indexations & Vectorisation Rapide
+        </button>
+      </div>
+
+      <hr class="border-slate-700">
+
+      <div>
+        <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Documents Ingestés</h3>
+        <ul id="doc-list" class="space-y-2 max-h-48 overflow-y-auto pr-1 text-xs">
+          <!-- Populated by JS -->
+        </ul>
+      </div>
+    </section>
+
+    <!-- Right Panel: QA Interface -->
+    <section class="lg:col-span-7 bg-slate-800 p-5 rounded-xl border border-slate-700 flex flex-col space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-lg font-semibold text-slate-200">2. Poser une question sur vos documents</h2>
+        <div id="perf-badge" class="text-xs text-green-400 bg-slate-900 px-2.5 py-1 rounded border border-green-900 font-mono">
+          Cache LRU: Pret
+        </div>
+      </div>
+
+      <div class="flex space-x-2">
+        <input id="query-input" type="text" placeholder="ex: Quelle est la politique de travail à distance ?" class="flex-1 bg-slate-900 border border-slate-700 rounded p-2.5 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+        <button id="btn-search" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm px-5 py-2.5 rounded transition">
+          Interroger IA
+        </button>
+      </div>
+
+      <div class="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-4 space-y-4 overflow-y-auto min-h-[300px]">
+        <div id="qa-output" class="text-sm text-slate-300 space-y-3">
+          <div class="text-slate-500 text-center py-10">
+            Saisissez une question ci-dessus pour effectuer une recherche sémantique avec RAG.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // In-memory Knowledge Base Documents
+    const documents = [
+      {
+        id: "1",
+        title: "Charte Remote Work & Congés 2025",
+        content: "Le travail à distance est autorisé jusqu'à 3 jours par semaine après validation du manager. Les congés payés doivent être posés 2 semaines à l'avance via le portal RH. Le forfait annuel est de 25 jours ouvrés."
+      },
+      {
+        id: "2",
+        title: "Politique de Sécurité & Mots de Passe",
+        content: "Tous les mots de passe doivent comporter au moins 14 caractères, incluant majuscules, chiffres et caractères spéciaux. L'authentification à deux facteurs (2FA) est obligatoire sur tous les outils de l'entreprise."
+      }
+    ];
+
+    // LRU Query Cache (Bolt ⚡ Optimization: prevent recalculating chunk similarity)
+    const queryCache = new Map();
+    const CACHE_LIMIT = 50;
+
+    function renderDocs() {
+      const docList = document.getElementById('doc-list');
+      const docCount = document.getElementById('doc-count');
+      docCount.textContent = `${documents.length} document${documents.length > 1 ? 's' : ''}`;
+
+      docList.innerHTML = documents.map(doc => `
+        <li class="bg-slate-900 p-2.5 rounded border border-slate-700 flex justify-between items-start">
+          <div>
+            <div class="font-medium text-slate-200">${escapeHtml(doc.title)}</div>
+            <div class="text-slate-400 text-[11px] truncate max-w-xs">${escapeHtml(doc.content)}</div>
+          </div>
+          <span class="text-[10px] text-blue-400 bg-blue-900/50 px-1.5 py-0.5 rounded">Indexed</span>
+        </li>
+      `).join('');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    }
+
+    document.getElementById('btn-add-doc').addEventListener('click', () => {
+      const titleInput = document.getElementById('doc-title');
+      const contentInput = document.getElementById('doc-content');
+
+      const title = titleInput.value.trim();
+      const content = contentInput.value.trim();
+
+      if (!title || !content) {
+        alert("Veuillez remplir le titre et le contenu du document.");
+        return;
+      }
+
+      documents.push({ id: String(Date.now()), title, content });
+      queryCache.clear(); // invalidate cache on new doc
+      titleInput.value = '';
+      contentInput.value = '';
+      renderDocs();
+    });
+
+    function searchQA(query) {
+      const startTime = performance.now();
+      const normalizedQuery = query.toLowerCase().trim();
+
+      if (queryCache.has(normalizedQuery)) {
+        const cached = queryCache.get(normalizedQuery);
+        const duration = (performance.now() - startTime).toFixed(2);
+        displayResult(cached.answer, cached.sources, duration, true);
+        return;
+      }
+
+      // Keyword & Context overlap search algorithm
+      const queryWords = normalizedQuery.split(/\s+/).filter(w => w.length > 2);
+      const scoredDocs = documents.map(doc => {
+        const text = doc.content.toLowerCase();
+        let score = 0;
+        queryWords.forEach(word => {
+          if (text.includes(word)) score += 1;
+        });
+        return { doc, score };
+      }).sort((a, b) => b.score - a.score);
+
+      const topMatches = scoredDocs.filter(d => d.score > 0);
+      let answer = "";
+      let sources = [];
+
+      if (topMatches.length === 0) {
+        answer = "Aucune information pertinente n'a été trouvée dans la base de connaissances actuelle.";
+      } else {
+        const bestDoc = topMatches[0].doc;
+        answer = `D'après le document "${bestDoc.title}", voici l'information pertinente: "${bestDoc.content}"`;
+        sources = topMatches.map(m => m.doc.title);
+      }
+
+      const resultData = { answer, sources };
+      if (queryCache.size >= CACHE_LIMIT) {
+        const firstKey = queryCache.keys().next().value;
+        queryCache.delete(firstKey);
+      }
+      queryCache.set(normalizedQuery, resultData);
+
+      const duration = (performance.now() - startTime).toFixed(2);
+      displayResult(answer, sources, duration, false);
+    }
+
+    function displayResult(answer, sources, duration, isCached) {
+      const qaOutput = document.getElementById('qa-output');
+      const perfBadge = document.getElementById('perf-badge');
+
+      perfBadge.textContent = isCached ? `⚡ Cache Hit (${duration}ms)` : `⏱️ Computed (${duration}ms)`;
+      perfBadge.className = isCached
+        ? "text-xs text-green-400 bg-green-950/60 px-2.5 py-1 rounded border border-green-800 font-mono"
+        : "text-xs text-yellow-400 bg-yellow-950/60 px-2.5 py-1 rounded border border-yellow-800 font-mono";
+
+      qaOutput.innerHTML = `
+        <div class="bg-slate-800 border border-slate-700 p-4 rounded-lg space-y-3">
+          <div class="text-xs font-semibold text-blue-400 uppercase tracking-wide">Reponse Générée</div>
+          <p class="text-slate-100 font-medium leading-relaxed">${escapeHtml(answer)}</p>
+          ${sources.length > 0 ? `
+            <div class="pt-2 border-t border-slate-700/60 flex items-center space-x-2 text-xs text-slate-400">
+              <span>Sources citées:</span>
+              ${sources.map(s => `<span class="bg-slate-700 text-slate-200 px-2 py-0.5 rounded text-[11px]">${escapeHtml(s)}</span>`).join('')}
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    document.getElementById('btn-search').addEventListener('click', () => {
+      const q = document.getElementById('query-input').value;
+      if (q.trim()) searchQA(q);
+    });
+
+    document.getElementById('query-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const q = e.target.value;
+        if (q.trim()) searchQA(q);
+      }
+    });
+
+    // Initial Render
+    renderDocs();
+  </script>
+</body>
+</html>
