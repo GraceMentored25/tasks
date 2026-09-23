@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Code Reviewer & Refactoring Assistant</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .bg-slate-900 { background-color: #0f172a; }
+    .bg-slate-800 { background-color: #1e293b; }
+    .border-slate-700 { border-color: #334155; }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+  <header class="border-b border-slate-700 bg-slate-800 px-6 py-4 flex flex-wrap items-center justify-between shadow-lg">
+    <div class="flex items-center space-x-3">
+      <span class="text-2xl">⚡</span>
+      <h1 class="text-xl font-bold text-white">AI Code Reviewer & Refactoring Assistant</h1>
+      <span class="bg-purple-600 text-xs px-2.5 py-1 rounded-full font-semibold text-white">Code AI MVP</span>
+    </div>
+    <div class="text-xs text-slate-400">
+      Malt Reference: <span class="text-slate-200 font-mono">Outil IA Revue de Code (€4k–€10k)</span>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <!-- Code Input Panel -->
+    <section class="lg:col-span-6 bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-lg font-semibold text-slate-200">Code Source à Analyser</h2>
+        <select id="language-select" class="bg-slate-900 border border-slate-700 text-xs rounded px-2.5 py-1 text-slate-300 focus:outline-none focus:border-purple-500">
+          <option value="javascript">JavaScript / TypeScript</option>
+          <option value="python">Python</option>
+          <option value="go">Go</option>
+        </select>
+      </div>
+
+      <textarea id="code-input" rows="16" class="w-full bg-slate-900 border border-slate-700 rounded p-3 text-xs text-slate-200 focus:outline-none focus:border-purple-500 font-mono leading-relaxed" placeholder="Collez votre code ici...">
+// Code d'exemple non optimisé avec potentielles failles / lenteurs O(n^2)
+function findDuplicates(items) {
+  let duplicates = [];
+  for (let i = 0; i < items.length; i++) {
+    for (let j = 0; j < items.length; j++) {
+      if (i !== j && items[i] === items[j]) {
+        if (!duplicates.includes(items[i])) {
+          duplicates.push(items[i]);
+        }
+      }
+    }
+  }
+  return duplicates;
+}
+      </textarea>
+
+      <button id="btn-analyze" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-medium text-sm py-2.5 px-4 rounded transition">
+        Lancer la Revue IA & Optimisation
+      </button>
+    </section>
+
+    <!-- Review & Refactored Result Panel -->
+    <section class="lg:col-span-6 bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-4 flex flex-col">
+      <div class="flex justify-between items-center">
+        <h2 class="text-lg font-semibold text-slate-200">Diagnostic & Refactoring IA</h2>
+        <span id="review-speed" class="text-xs text-purple-400 bg-slate-900 px-2 py-0.5 rounded border border-purple-900 font-mono">
+          Analyse: Prête
+        </span>
+      </div>
+
+      <!-- Diagnostics List -->
+      <div class="space-y-2">
+        <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Avertissements Performance / Sécurité</h3>
+        <div id="diagnostics-container" class="space-y-2 max-h-36 overflow-y-auto">
+          <div class="text-xs text-slate-500 bg-slate-900 p-3 rounded border border-slate-700">
+            Cliquez sur "Lancer la Revue IA" pour afficher l'analyse du code.
+          </div>
+        </div>
+      </div>
+
+      <!-- Proposed Refactored Code -->
+      <div class="flex-1 flex flex-col space-y-2">
+        <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Code Optimisé Proposé</h3>
+        <pre id="refactored-output" class="flex-1 bg-slate-900 border border-slate-700 rounded p-3 text-xs text-emerald-400 font-mono overflow-x-auto leading-relaxed">// Le code refactorisé apparaîtra ici...</pre>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Client-side cache for review snippets (Bolt ⚡ Optimization)
+    const reviewCache = new Map();
+
+    function analyzeCode() {
+      const startTime = performance.now();
+      const code = document.getElementById('code-input').value;
+      const lang = document.getElementById('language-select').value;
+
+      if (!code.trim()) {
+        alert("Veuillez saisir ou coller un extrait de code.");
+        return;
+      }
+
+      // Hash cache key
+      const cacheKey = `${lang}:${code.trim()}`;
+      if (reviewCache.has(cacheKey)) {
+        const cached = reviewCache.get(cacheKey);
+        const duration = (performance.now() - startTime).toFixed(2);
+        renderAnalysis(cached.diagnostics, cached.refactored, `${duration}ms (Cache Hit)`);
+        return;
+      }
+
+      const diagnostics = [];
+      let refactoredCode = code;
+
+      // Pattern static checks O(N)
+      if (code.includes('for (') && code.split('for (').length > 2) {
+        diagnostics.push({
+          type: 'PERFORMANCE',
+          severity: 'HIGH',
+          message: 'Boucles imbriquées détectées (Complexité O(N²)). Remplacez par un HashMap/Set pour une complexité O(N).'
+        });
+        refactoredCode = `// Code optimisé O(N) avec Set
+function findDuplicates(items) {
+  const seen = new Set();
+  const duplicates = new Set();
+
+  for (const item of items) {
+    if (seen.has(item)) {
+      duplicates.add(item);
+    } else {
+      seen.add(item);
+    }
+  }
+  return Array.from(duplicates);
+}`;
+      }
+
+      if (code.includes('includes(') && code.includes('.push(')) {
+        diagnostics.push({
+          type: 'PERFORMANCE',
+          severity: 'MEDIUM',
+          message: 'Recherche lineaire .includes() dans une boucle. Utilisez une structure Set pour des recherches en O(1).'
+        });
+      }
+
+      if (!code.includes('try {') && (code.includes('await ') || code.includes('fetch('))) {
+        diagnostics.push({
+          type: 'SECURITY',
+          severity: 'MEDIUM',
+          message: 'Appels asynchrones sans bloc try/catch. Risque d unhandled promise rejection.'
+        });
+      }
+
+      if (diagnostics.length === 0) {
+        diagnostics.push({
+          type: 'INFO',
+          severity: 'LOW',
+          message: 'Aucun problème majeur de performance ou de sécurité détecté par l\'analyseur rapide.'
+        });
+      }
+
+      reviewCache.set(cacheKey, { diagnostics, refactored: refactoredCode });
+
+      const duration = (performance.now() - startTime).toFixed(2);
+      renderAnalysis(diagnostics, refactoredCode, `${duration}ms`);
+    }
+
+    function renderAnalysis(diagnostics, refactoredText, speedStr) {
+      const diagContainer = document.getElementById('diagnostics-container');
+      const outputPre = document.getElementById('refactored-output');
+      const speedBadge = document.getElementById('review-speed');
+
+      speedBadge.textContent = `⚡ Analysis: ${speedStr}`;
+
+      diagContainer.innerHTML = diagnostics.map(d => {
+        let badgeClass = "bg-blue-900/60 text-blue-300 border-blue-700";
+        if (d.severity === 'HIGH') badgeClass = "bg-red-900/60 text-red-300 border-red-700";
+        if (d.severity === 'MEDIUM') badgeClass = "bg-yellow-900/60 text-yellow-300 border-yellow-700";
+
+        return `
+          <div class="bg-slate-900 p-2.5 rounded border border-slate-700 text-xs flex justify-between items-start space-x-2">
+            <div>
+              <span class="inline-block px-1.5 py-0.5 text-[10px] rounded border ${badgeClass} font-semibold mr-2">${d.type}</span>
+              <span class="text-slate-300">${escapeHtml(d.message)}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      outputPre.textContent = refactoredText;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    }
+
+    document.getElementById('btn-analyze').addEventListener('click', analyzeCode);
+  </script>
+</body>
+</html>
