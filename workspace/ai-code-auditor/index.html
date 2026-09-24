@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; img-src 'self' data: https:;">
+  <title>AI Code Auditor - Fast Static Analysis</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="badge">⚡ Powered by Bolt</div>
+      <h1>AI Code Auditor & Security Scanner</h1>
+      <p class="subtitle">Ultra-fast static analysis for security vulnerabilities and performance anti-patterns</p>
+    </header>
+
+    <main class="grid-layout">
+      <section class="card">
+        <h2>Source Code Input</h2>
+        <div class="form-group">
+          <textarea id="code-input" rows="12" placeholder="Paste JavaScript or HTML code here to analyze..."></textarea>
+        </div>
+        <button id="audit-btn" class="btn btn-primary">⚡ Run Fast AI Audit</button>
+      </section>
+
+      <section class="card">
+        <div class="output-header">
+          <h2>Audit & Vulnerability Report</h2>
+          <div id="perf-metrics" class="perf-metrics">Scan Time: 0ms</div>
+        </div>
+        <div id="report-output" class="report-output">
+          <p class="placeholder">Click "Run Fast AI Audit" to inspect code for performance and security issues.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; img-src 'self' data: https:;">
+  <title>AI Copywriter Pro - High Performance Copy Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="badge">⚡ Powered by Bolt</div>
+      <h1>AI Copywriter Pro</h1>
+      <p class="subtitle">Lightning-fast marketing copy generator with real-time cached preview engine</p>
+    </header>
+
+    <main class="grid-layout">
+      <section class="card input-section">
+        <h2>1. Configure Strategy</h2>
+        <div class="form-group">
+          <label for="topic">Product / Service Name & Topic</label>
+          <input type="text" id="topic" placeholder="e.g. Acme Cloud Storage for Teams" value="Acme Cloud Storage">
+        </div>
+
+        <div class="form-group">
+          <label for="target-audience">Target Audience</label>
+          <input type="text" id="target-audience" placeholder="e.g. Remote Software Developers" value="Software Engineers & CTOs">
+        </div>
+
+        <div class="form-group">
+          <label for="format">Copywriting Format</label>
+          <select id="format">
+            <option value="landing">Landing Page Hero & Features</option>
+            <option value="email">Cold Outreach Email Sequence</option>
+            <option value="social">LinkedIn Viral Post Series</option>
+            <option value="ad">Google & Meta High-CTR Ad Copy</option>
+          </select>
+        </div>
+
+        <button id="generate-btn" class="btn btn-primary">
+          <span id="btn-text">⚡ Generate High-Converting Copy</span>
+        </button>
+      </section>
+
+      <section class="card output-section">
+        <div class="output-header">
+          <h2>2. Live Output Preview</h2>
+          <div class="metrics" id="perf-metrics">Latency: 0ms (Cached)</div>
+        </div>
+        <div id="output-box" class="output-box">
+          <p class="placeholder">Click "Generate High-Converting Copy" or edit strategy parameters above to see fast, optimized generated copy.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
