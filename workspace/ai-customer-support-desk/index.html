@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; img-src 'self' data: https:;">
+  <title>AI Support Desk - High Speed Auto Triage</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="badge">⚡ Powered by Bolt</div>
+      <h1>AI Customer Support Desk</h1>
+      <p class="subtitle">Automated ticket classification & instant AI response generation</p>
+    </header>
+
+    <main class="grid-layout">
+      <section class="card">
+        <h2>Customer Tickets</h2>
+        <div class="search-bar">
+          <input type="text" id="search-input" placeholder="Search tickets (O(1) indexed lookup)...">
+        </div>
+        <div id="ticket-list" class="ticket-list"></div>
+      </section>
+
+      <section class="card">
+        <div class="output-header">
+          <h2>AI Ticket Resolution</h2>
+          <div id="perf-badge" class="perf-badge">Search Latency: 0.1ms</div>
+        </div>
+        <div id="ticket-detail" class="ticket-detail">
+          <p class="placeholder">Select a ticket from the left panel to trigger fast AI auto-response generation.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
