@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
+  <title>AI SEO Content Optimizer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>⚡ AI SEO Content Optimizer</h1>
+    <p>Real-time intelligent content analysis, keyword density, and search ranking engine</p>
+  </header>
+
+  <main class="container">
+    <section class="editor-section">
+      <div class="form-group">
+        <label for="target-keyword">Target Keyword / Topic</label>
+        <input type="text" id="target-keyword" placeholder="e.g. artificial intelligence tools" value="ai workflow automation">
+      </div>
+      <div class="form-group">
+        <label for="content-input">Content Draft</label>
+        <textarea id="content-input" rows="12" placeholder="Start typing or paste your content article draft here..."></textarea>
+      </div>
+      <div class="actions">
+        <button id="analyze-btn" class="btn primary">⚡ Analyze Content</button>
+        <button id="clear-btn" class="btn secondary">Clear Text</button>
+      </div>
+    </section>
+
+    <section class="analysis-section">
+      <h2>Optimization Insights</h2>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <span class="metric-title">SEO Score</span>
+          <span id="seo-score" class="metric-value">0 / 100</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-title">Readability Index</span>
+          <span id="readability-score" class="metric-value">--</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-title">Word Count</span>
+          <span id="word-count" class="metric-value">0 words</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-title">Est. Read Time</span>
+          <span id="read-time" class="metric-value">0 min</span>
+        </div>
+      </div>
+
+      <div class="recommendations">
+        <h3>AI Content Recommendations</h3>
+        <ul id="recommendations-list" class="rec-list">
+          <li class="placeholder">Enter content to view AI optimization recommendations.</li>
+        </ul>
+      </div>
+
+      <div class="keywords-analysis">
+        <h3>Detected Keywords Density</h3>
+        <div id="keywords-container" class="tags-container">
+          <span class="placeholder">No keywords analyzed yet.</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
