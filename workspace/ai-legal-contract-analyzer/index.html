@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
+  <title>AI Legal Contract Analyzer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>⚡ AI Legal Contract & Risk Analyzer</h1>
+    <p>Automated clause extraction, liability detection, and legal compliance assessment</p>
+  </header>
+
+  <main class="container">
+    <section class="contract-input-section">
+      <div class="form-group">
+        <label for="contract-type">Contract Type</label>
+        <select id="contract-type">
+          <option value="general">General Commercial Agreement / SaaS</option>
+          <option value="nda">Non-Disclosure Agreement (NDA)</option>
+          <option value="service">Master Services Agreement (MSA)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="contract-text">Contract Document Text</label>
+        <textarea id="contract-text" rows="12" placeholder="Paste legal contract clauses here..."></textarea>
+      </div>
+
+      <div class="actions">
+        <button id="analyze-btn" class="btn primary">⚡ Audit Contract Risks</button>
+        <button id="load-sample-btn" class="btn secondary">Load Sample Agreement</button>
+      </div>
+    </section>
+
+    <section class="analysis-results-section">
+      <h2>Risk Audit Results</h2>
+      <div class="overall-risk-card">
+        <span class="risk-label">Overall Risk Level</span>
+        <span id="risk-score-badge" class="badge">Awaiting Audit</span>
+      </div>
+
+      <div class="flagged-clauses">
+        <h3>Flagged Clauses & Liabilities</h3>
+        <div id="clauses-container" class="clauses-list">
+          <p class="placeholder">Load contract text and click audit to identify high-risk legal clauses.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

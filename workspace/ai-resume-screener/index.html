@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
+  <title>AI Resume Screener</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>⚡ AI Candidate & Resume Screener</h1>
+    <p>Automated resume evaluation, skill matrix matching, and recruitment fit scoring</p>
+  </header>
+
+  <main class="container">
+    <section class="job-config">
+      <h2>1. Job Position Requirements</h2>
+      <div class="form-group">
+        <label for="job-title">Job Title</label>
+        <input type="text" id="job-title" value="Senior Full Stack AI Developer">
+      </div>
+      <div class="form-group">
+        <label for="required-skills">Required Skills (comma separated)</label>
+        <input type="text" id="required-skills" value="JavaScript, Python, React, Node.js, AI, Machine Learning, PostgreSQL, Docker">
+      </div>
+      <button id="rescreen-btn" class="btn primary">⚡ Run Candidate Matching</button>
+    </section>
+
+    <section class="candidate-list-section">
+      <div class="section-header">
+        <h2>2. Candidate Pipeline</h2>
+        <button id="add-sample-btn" class="btn secondary">+ Add Sample Candidate</button>
+      </div>
+      <div id="candidates-container" class="candidates-grid">
+        <!-- Candidate cards dynamically rendered -->
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
