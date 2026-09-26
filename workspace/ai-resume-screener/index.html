@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+  <title>AI Resume Screener | Candidate Matcher</title>
+  <style>
+    :root {
+      --bg: #030712;
+      --card: #111827;
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --primary: #10b981;
+      --primary-hover: #059669;
+      --border: #1f2937;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 20px; line-height: 1.5; }
+    header { max-width: 1100px; margin: 0 auto 20px auto; display: flex; justify-content: space-between; align-items: center; }
+    h1 { font-size: 1.5rem; color: var(--primary); }
+    .badge { background: #064e3b; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; color: #a7f3d0; }
+    .container { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 360px 1fr; gap: 20px; }
+    @media (max-width: 850px) { .container { grid-template-columns: 1fr; } }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+    .form-group { margin-bottom: 12px; }
+    label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 4px; }
+    input, select, textarea { width: 100%; padding: 8px 12px; background: #030712; border: 1px solid var(--border); color: #fff; border-radius: 6px; font-size: 0.9rem; }
+    textarea { height: 90px; }
+    button { background: var(--primary); color: #030712; border: none; font-weight: 700; padding: 10px 16px; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+    button:hover { background: var(--primary-hover); color: #fff; }
+    .candidate-card { background: #0b0f19; border: 1px solid var(--border); padding: 15px; border-radius: 6px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .score-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; }
+    .score-high { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
+    .score-med { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }
+    .score-low { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
+    .tag { display: inline-block; background: #1f2937; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; color: #d1d5db; margin-right: 4px; }
+    .missing-tag { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+    .pagination { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; font-size: 0.85rem; }
+    .perf { font-size: 0.8rem; color: #34d399; margin-top: 5px; text-align: right; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>⚡ AI Resume Screener</h1>
+    <span class="badge">Malt Ref #MALT-AI-2024-195</span>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h2>Job Position & Requirements</h2>
+      <div class="form-group" style="margin-top: 15px;">
+        <label for="job-title">Job Title</label>
+        <input type="text" id="job-title" value="Senior Full Stack AI Engineer">
+      </div>
+      <div class="form-group">
+        <label for="required-skills">Required Skills (Comma separated)</label>
+        <input type="text" id="required-skills" value="Python, TypeScript, React, PostgreSQL, Node.js, Docker, LLM">
+      </div>
+      <div class="form-group">
+        <label for="candidate-cv">Parse New Candidate CV</label>
+        <textarea id="candidate-cv" placeholder="Paste resume text here...">John Doe - Senior Developer with 6 years experience in Python, TypeScript, React, Docker, PostgreSQL, and building AI LLM agents.</textarea>
+      </div>
+      <button id="screen-candidate-btn" style="width: 100%;">⚡ Screen & Score Profile</button>
+      <button id="seed-candidates-btn" style="width: 100%; margin-top: 8px; background: #374151; color: #fff;">Load 12 Sample CVs</button>
+    </div>
+
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h2>Candidate Leaderboard (<span id="candidate-count">0</span>)</h2>
+        <div class="perf" id="perf-metrics">Scoring Time: 0 ms</div>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+        <input type="text" id="search-input" placeholder="Search by name or skill..." style="flex:1;">
+        <select id="score-filter" style="width: 160px;">
+          <option value="0">All Scores</option>
+          <option value="75">≥ 75% Match</option>
+          <option value="50">≥ 50% Match</option>
+        </select>
+      </div>
+
+      <div id="candidates-list">
+        <!-- Rendered via fast pagination -->
+      </div>
+
+      <div class="pagination">
+        <button id="prev-page-btn" style="padding: 4px 12px; font-size: 0.8rem;">◀ Prev</button>
+        <span>Page <strong id="current-page">1</strong> / <strong id="total-pages">1</strong></span>
+        <button id="next-page-btn" style="padding: 4px 12px; font-size: 0.8rem;">Next ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
