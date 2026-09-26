@@ -1,0 +1,11 @@
+{
+  "name": "ai-commercial-mvps",
+  "version": "1.0.0",
+  "description": "Commercial AI MVP web applications repository",
+  "scripts": {
+    "test": "node test-verify.js"
+  },
+  "keywords": ["ai", "mvp", "performance"],
+  "author": "",
+  "license": "MIT"
+}
