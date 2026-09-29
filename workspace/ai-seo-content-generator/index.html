@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI SEO Content Generator & Optimizer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased">
+  <header class="border-b border-slate-800 bg-slate-950/80 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="p-2 bg-indigo-600 rounded-lg text-white font-bold text-xl">⚡</div>
+        <div>
+          <h1 class="font-bold text-lg text-white">AI SEO Content Generator</h1>
+          <p class="text-xs text-slate-400">Commercial MVP • Malt Reference: Prompt Engineer / SEO</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3">
+        <span class="text-xs px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full font-medium">LRU Cache Enabled</span>
+        <span class="text-xs px-2.5 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-full font-medium">TJM: 500€-800€/j</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Configuration Panel -->
+    <section class="lg:col-span-5 bg-slate-950/60 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+      <div>
+        <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <span>🎯 Article Strategy & Target Keywords</span>
+        </h2>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Target Topic / Title</label>
+            <input type="text" id="topicInput" value="Best AI Workflow Tools for Freelancers in 2026"
+              class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Primary Keywords (comma-separated)</label>
+            <input type="text" id="keywordsInput" value="AI tools, freelancing, productivity, automated workflows, LLM"
+              class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Tone of Voice</label>
+              <select id="toneSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="Professional">Professional & Authoritative</option>
+                <option value="Conversational">Conversational & Engaging</option>
+                <option value="Technical">Technical & Data-Driven</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Target Word Count</label>
+              <input type="number" id="wordCountInput" value="600" min="200" max="2000" step="100"
+                class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+          </div>
+
+          <button id="generateBtn" onclick="handleGenerate()" class="w-full mt-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 rounded-lg text-sm transition-colors flex items-center justify-center gap-2">
+            <span>⚡ Generate SEO Article</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Real-time Performance Metrics Box -->
+      <div class="mt-6 pt-6 border-t border-slate-800/80">
+        <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Performance Telemetry (Bolt ⚡)</h3>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
+            <div class="text-slate-400">Cache Status</div>
+            <div id="cacheStatus" class="font-bold text-slate-200">MISS (Fresh)</div>
+          </div>
+          <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
+            <div class="text-slate-400">Execution Time</div>
+            <div id="executionTime" class="font-bold text-emerald-400">0.00 ms</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Editor & Analytics -->
+    <section class="lg:col-span-7 space-y-6">
+      <div class="bg-slate-950/60 p-6 rounded-2xl border border-slate-800">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-white">Generated Content & Live Editor</h2>
+          <div class="flex items-center space-x-3 text-xs text-slate-400">
+            <span id="liveWordCount">Words: 0</span>
+            <span>•</span>
+            <span id="readTime">Read time: 0 min</span>
+          </div>
+        </div>
+
+        <textarea id="editorText" oninput="debouncedAnalyze()" rows="12"
+          placeholder="Click 'Generate SEO Article' to stream optimized content..."
+          class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-sm text-slate-200 font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+      </div>
+
+      <!-- Live Keyword Density Breakdown -->
+      <div class="bg-slate-950/60 p-6 rounded-2xl border border-slate-800">
+        <h3 class="text-sm font-semibold text-white mb-3">Live Keyword Density Analysis (O(N) Hash Map Lookup)</h3>
+        <div id="keywordChips" class="flex flex-wrap gap-2 text-xs text-slate-400">
+          <span>Enter content or generate to calculate keyword density...</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // PERFORMANCE OPTIMIZATION 1: O(1) LRU Cache for AI Prompt Results
+    class LRUCache {
+      constructor(maxSize = 20) {
+        this.maxSize = maxSize;
+        this.cache = new Map();
+      }
+      get(key) {
+        if (!this.cache.has(key)) return null;
+        const val = this.cache.get(key);
+        this.cache.delete(key);
+        this.cache.set(key, val); // Refresh key priority
+        return val;
+      }
+      set(key, value) {
+        if (this.cache.has(key)) this.cache.delete(key);
+        else if (this.cache.size >= this.maxSize) {
+          const oldestKey = this.cache.keys().next().value;
+          this.cache.delete(oldestKey);
+        }
+        this.cache.set(key, value);
+      }
+    }
+
+    const aiCache = new LRUCache(20);
+
+    // PERFORMANCE OPTIMIZATION 2: Debounced Text Analysis to keep 60 FPS
+    function debounce(func, delay = 150) {
+      let timeout;
+      return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func(...args), delay);
+      };
+    }
+
+    const debouncedAnalyze = debounce(analyzeText, 150);
+
+    function handleGenerate() {
+      const topic = document.getElementById('topicInput').value.trim();
+      const keywords = document.getElementById('keywordsInput').value.trim();
+      const tone = document.getElementById('toneSelect').value;
+      const targetWords = parseInt(document.getElementById('wordCountInput').value) || 600;
+
+      const cacheKey = `${topic}|${keywords}|${tone}|${targetWords}`;
+      const startTime = performance.now();
+
+      // Check LRU Cache
+      const cachedResponse = aiCache.get(cacheKey);
+      if (cachedResponse) {
+        document.getElementById('editorText').value = cachedResponse;
+        const endTime = performance.now();
+        document.getElementById('cacheStatus').textContent = "HIT (Instant O(1))";
+        document.getElementById('cacheStatus').className = "font-bold text-amber-400";
+        document.getElementById('executionTime').textContent = `${(endTime - startTime).toFixed(2)} ms`;
+        analyzeText();
+        return;
+      }
+
+      // Generate article if cache miss
+      document.getElementById('cacheStatus').textContent = "MISS (Generated)";
+      document.getElementById('cacheStatus').className = "font-bold text-slate-200";
+
+      const generated = `# ${topic}\n\nIn 2026, implementing effective ${keywords.split(',')[0] || 'AI tools'} has become the cornerstone of high-performing digital strategy. Whether you specialize in ${keywords.split(',')[1] || 'freelancing'} or agency growth, optimizing your daily workflow ensures maximum scalability and focus.\n\n## Why Automated Workflows Matter\nModern digital operations demand continuous throughput. Leveraging intelligent LLM systems and automated pipelines allows teams to scale production without compromising on speed or quality.\n\n### Key Takeaways:\n- Streamlined keyword targeting and SERP density monitoring\n- Instant readability scoring and automated meta-formatting\n- Reduced cycle times for long-form content generation\n\nBy keeping execution lightweight and caching prompt outcomes, creators achieve peak productivity across every channel.`;
+
+      aiCache.set(cacheKey, generated);
+
+      const endTime = performance.now();
+      document.getElementById('executionTime').textContent = `${(endTime - startTime).toFixed(2)} ms`;
+      document.getElementById('editorText').value = generated;
+      analyzeText();
+    }
+
+    // Single-pass O(N) Keyword Frequency Calculator
+    function analyzeText() {
+      const text = document.getElementById('editorText').value;
+      const words = text.toLowerCase().match(/\b\w+\b/g) || [];
+      const wordCount = words.length;
+
+      document.getElementById('liveWordCount').textContent = `Words: ${wordCount}`;
+      document.getElementById('readTime').textContent = `Read time: ${Math.ceil(wordCount / 200)} min`;
+
+      // Frequency map creation O(N)
+      const freq = new Map();
+      words.forEach(w => {
+        if (w.length > 3) {
+          freq.set(w, (freq.get(w) || 0) + 1);
+        }
+      });
+
+      // Top 6 keywords sorting
+      const sorted = [...freq.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
+      const chipsContainer = document.getElementById('keywordChips');
+
+      if (sorted.length === 0) {
+        chipsContainer.innerHTML = '<span>No sufficient text to analyze.</span>';
+        return;
+      }
+
+      chipsContainer.innerHTML = sorted.map(([kw, count]) => {
+        const pct = ((count / wordCount) * 100).toFixed(1);
+        return `<div class="bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg flex items-center space-x-2">
+          <span class="font-medium text-slate-200">${kw}</span>
+          <span class="bg-indigo-500/20 text-indigo-300 text-[10px] px-1.5 py-0.5 rounded-full font-mono">${count} (${pct}%)</span>
+        </div>`;
+      }).join('');
+    }
+
+    // Initial trigger
+    window.onload = () => handleGenerate();
+  </script>
+</body>
+</html>
