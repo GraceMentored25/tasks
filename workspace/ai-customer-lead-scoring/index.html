@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Lead Scoring & B2B Qualification</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased">
+  <header class="border-b border-slate-800 bg-slate-950/80 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="p-2 bg-purple-600 rounded-lg text-white font-bold text-xl">⚡</div>
+        <div>
+          <h1 class="font-bold text-lg text-white">AI Lead Scoring & B2B Qualification</h1>
+          <p class="text-xs text-slate-400">Commercial MVP • Malt Reference: B2B Lead Scoring / OpenAI</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3">
+        <span class="text-xs px-2.5 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-full font-medium">Memoized Scoring Matrix</span>
+        <span class="text-xs px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full font-medium">TJM: 600€-900€/j</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Lead Scoring Simulator -->
+    <section class="lg:col-span-5 bg-slate-950/60 p-6 rounded-2xl border border-slate-800">
+      <h2 class="text-lg font-semibold text-white mb-4">🎯 Lead Vector Simulator</h2>
+      <div class="space-y-4 text-sm">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Company / Lead Name</label>
+          <input type="text" id="leadName" value="Acme Cloud Solutions"
+            class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Company Size (FTEs)</label>
+            <select id="companySize" onchange="recalculateScore()" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+              <option value="10">1 - 20 employees</option>
+              <option value="100" selected>21 - 250 employees</option>
+              <option value="500">251 - 1000 employees</option>
+              <option value="2000">1000+ Enterprise</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Budget Readiness (€)</label>
+            <select id="budgetTier" onchange="recalculateScore()" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+              <option value="1">Under 5,000€</option>
+              <option value="3" selected>5,000€ - 25,000€</option>
+              <option value="5">25,000€ - 100,000€+</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Product Engagement Signals (1-100)</label>
+          <input type="range" id="engagementSlider" min="1" max="100" value="82" oninput="recalculateScore()"
+            class="w-full accent-purple-500">
+          <div class="flex justify-between text-xs text-slate-400">
+            <span>Low Intent</span>
+            <span id="engagementVal" class="font-bold text-purple-400">82</span>
+            <span>High Intent</span>
+          </div>
+        </div>
+
+        <button onclick="addLeadToPipeline()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-medium py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 mt-4">
+          <span>⚡ Add Lead to Pipeline</span>
+        </button>
+      </div>
+
+      <!-- Live Calculated Output -->
+      <div class="mt-6 pt-6 border-t border-slate-800/80">
+        <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Calculated AI Profile</h3>
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+            <div class="text-xs text-slate-400">AI Qualification Score</div>
+            <div id="scoreDisplay" class="text-2xl font-bold text-purple-400">88 / 100</div>
+          </div>
+          <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+            <div class="text-xs text-slate-400">Conversion Likelihood</div>
+            <div id="probDisplay" class="text-2xl font-bold text-emerald-400">HIGH (84%)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pipeline List View -->
+    <section class="lg:col-span-7 bg-slate-950/60 p-6 rounded-2xl border border-slate-800">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-white">Active Lead Pipeline</h2>
+        <input type="text" id="searchInput" placeholder="Search leads..." oninput="filterPipeline()"
+          class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-900 text-slate-400 border-b border-slate-800">
+            <tr>
+              <th class="p-3">Company</th>
+              <th class="p-3">Size</th>
+              <th class="p-3">Engagement</th>
+              <th class="p-3">AI Score</th>
+              <th class="p-3">Priority</th>
+            </tr>
+          </thead>
+          <tbody id="pipelineTable" class="divide-y divide-slate-800/50">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // PERFORMANCE OPTIMIZATION: Memoization Map for Vector Score Calculation
+    const scoreMemoMap = new Map();
+
+    function calculateLeadScoreVector(size, budgetTier, engagement) {
+      const key = `${size}-${budgetTier}-${engagement}`;
+      if (scoreMemoMap.has(key)) {
+        return scoreMemoMap.get(key);
+      }
+
+      // Weighted score vector calculation
+      const sizeWeight = Math.min(size / 20, 25);
+      const budgetWeight = budgetTier * 7;
+      const engagementWeight = engagement * 0.54;
+
+      const totalScore = Math.min(Math.round(sizeWeight + budgetWeight + engagementWeight), 100);
+      const probability = Math.round(totalScore * 0.92);
+
+      const result = { totalScore, probability };
+      scoreMemoMap.set(key, result);
+      return result;
+    }
+
+    let leads = [
+      { name: "Nexus Fintech", size: 500, budgetTier: 5, engagement: 95 },
+      { name: "SaaSify Platform", size: 100, budgetTier: 3, engagement: 82 },
+      { name: "DataFlow AI", size: 20, budgetTier: 1, engagement: 45 },
+      { name: "Global Logistics", size: 2000, budgetTier: 5, engagement: 88 }
+    ];
+
+    function recalculateScore() {
+      const size = parseInt(document.getElementById('companySize').value);
+      const budgetTier = parseInt(document.getElementById('budgetTier').value);
+      const engagement = parseInt(document.getElementById('engagementSlider').value);
+
+      document.getElementById('engagementVal').textContent = engagement;
+
+      const { totalScore, probability } = calculateLeadScoreVector(size, budgetTier, engagement);
+
+      document.getElementById('scoreDisplay').textContent = `${totalScore} / 100`;
+
+      const probText = totalScore > 75 ? `HIGH (${probability}%)` : totalScore > 50 ? `MED (${probability}%)` : `LOW (${probability}%)`;
+      const probClass = totalScore > 75 ? "text-2xl font-bold text-emerald-400" : totalScore > 50 ? "text-2xl font-bold text-amber-400" : "text-2xl font-bold text-rose-400";
+
+      const probEl = document.getElementById('probDisplay');
+      probEl.textContent = probText;
+      probEl.className = probClass;
+    }
+
+    // Single-pass DocumentFragment pipeline renderer
+    function renderPipeline(items = leads) {
+      const tableBody = document.getElementById('pipelineTable');
+      const fragment = document.createDocumentFragment();
+
+      items.forEach(item => {
+        const { totalScore } = calculateLeadScoreVector(item.size, item.budgetTier, item.engagement);
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-900/50 transition-colors";
+
+        const badgeClass = totalScore > 75 ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : totalScore > 50 ? "bg-amber-500/10 text-amber-400 border-amber-500/20" : "bg-rose-500/10 text-rose-400 border-rose-500/20";
+        const priorityText = totalScore > 75 ? "P1 - Immediate" : totalScore > 50 ? "P2 - Nurture" : "P3 - Low Priority";
+
+        tr.innerHTML = `
+          <td class="p-3 font-medium text-slate-200">${item.name}</td>
+          <td class="p-3 text-slate-400">${item.size} FTEs</td>
+          <td class="p-3 text-slate-400">${item.engagement}/100</td>
+          <td class="p-3 font-bold text-slate-100">${totalScore}</td>
+          <td class="p-3">
+            <span class="px-2 py-0.5 border rounded-full text-[10px] font-medium ${badgeClass}">${priorityText}</span>
+          </td>
+        `;
+        fragment.appendChild(tr);
+      });
+
+      tableBody.innerHTML = "";
+      tableBody.appendChild(fragment);
+    }
+
+    function addLeadToPipeline() {
+      const name = document.getElementById('leadName').value.trim() || "New Prospect";
+      const size = parseInt(document.getElementById('companySize').value);
+      const budgetTier = parseInt(document.getElementById('budgetTier').value);
+      const engagement = parseInt(document.getElementById('engagementSlider').value);
+
+      leads.unshift({ name, size, budgetTier, engagement });
+      renderPipeline();
+    }
+
+    function filterPipeline() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      // Single pass filter O(N)
+      const filtered = leads.filter(l => l.name.toLowerCase().includes(query));
+      renderPipeline(filtered);
+    }
+
+    window.onload = () => {
+      recalculateScore();
+      renderPipeline();
+    };
+  </script>
+</body>
+</html>
