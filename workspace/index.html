@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Commercial AI MVP Applications Showcase</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --primary: #3b82f6;
+      --accent: #10b981;
+      --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-family);
+      line-height: 1.5;
+      padding: 3rem 1.5rem;
+    }
+    .container { max-width: 1000px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 3rem; }
+    .badge {
+      display: inline-block;
+      background: rgba(59, 130, 246, 0.2);
+      color: var(--primary);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+    h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+    p.subtitle { color: var(--muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+    }
+    .card-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .card-desc {
+      color: var(--muted);
+      font-size: 0.925rem;
+      margin-bottom: 1.25rem;
+      flex-grow: 1;
+    }
+    .card-meta {
+      font-size: 0.825rem;
+      color: #cbd5e1;
+      background: #0f172a;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      margin-bottom: 1.25rem;
+      border: 1px solid var(--border);
+    }
+    .btn-launch {
+      display: block;
+      text-align: center;
+      background: var(--primary);
+      color: white;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    .btn-launch:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge">⚡ Commercial AI Workspaces</span>
+      <h1>Commercial AI MVP Web Applications</h1>
+      <p class="subtitle">High-performance client-side AI MVP solutions built for commercial freelance client requests.</p>
+    </header>
+
+    <div class="grid">
+      <!-- App 1 -->
+      <div class="card">
+        <div>
+          <h2 class="card-title">AI SEO Content Generator</h2>
+          <p class="card-desc">Instant keyword density extraction, readability scoring, and AI article outline generation with O(1) response caching.</p>
+          <div class="card-meta">
+            <strong>Malt Reference:</strong> #AI-SEO-2026-8921<br>
+            <strong>TJM / Budget:</strong> 500€ - 700€ / day (4,500€)
+          </div>
+        </div>
+        <a href="./ai-seo-content-generator/index.html" class="btn-launch">Launch App ⚡</a>
+      </div>
+
+      <!-- App 2 -->
+      <div class="card">
+        <div>
+          <h2 class="card-title">AI Customer Lead Scoring</h2>
+          <p class="card-desc">Predictive B2B lead qualification engine calculating lead scores, deal conversion probability, and risk analysis in real time.</p>
+          <div class="card-meta">
+            <strong>Malt Reference:</strong> #AI-LEAD-2026-3042<br>
+            <strong>TJM / Budget:</strong> 550€ - 750€ / day (5,000€)
+          </div>
+        </div>
+        <a href="./ai-customer-lead-scoring/index.html" class="btn-launch">Launch App ⚡</a>
+      </div>
+
+      <!-- App 3 -->
+      <div class="card">
+        <div>
+          <h2 class="card-title">AI Code Reviewer Assistant</h2>
+          <p class="card-desc">Single-pass static lexical code reviewer auditing security vulnerabilities (OWASP Top 10) and performance bottlenecks.</p>
+          <div class="card-meta">
+            <strong>Malt Reference:</strong> #AI-CODE-2026-7719<br>
+            <strong>TJM / Budget:</strong> 600€ - 800€ / day (6,000€)
+          </div>
+        </div>
+        <a href="./ai-code-reviewer-assistant/index.html" class="btn-launch">Launch App ⚡</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
