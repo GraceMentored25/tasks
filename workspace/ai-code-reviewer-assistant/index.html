@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Automated Code Reviewer & Security Audit - MVP</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --primary: #3b82f6;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+      --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.5;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 1050px;
+      margin: 0 auto;
+    }
+    header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(168, 85, 247, 0.2);
+      color: #c084fc;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    h1 { font-size: 2rem; font-weight: 700; }
+    p.subtitle { color: var(--muted); margin-top: 0.25rem; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .grid { grid-template-columns: 1fr 1fr; }
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+    }
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .form-group { margin-bottom: 1rem; }
+    label { display: block; font-size: 0.875rem; margin-bottom: 0.375rem; color: var(--muted); }
+    select, textarea {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.625rem;
+      color: var(--text);
+      font-family: 'Fira Code', 'Courier New', monospace;
+      font-size: 0.875rem;
+    }
+    textarea { height: 260px; resize: vertical; }
+    button.btn-primary {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .finding-item {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      padding: 0.875rem;
+      border-radius: 0.375rem;
+      margin-bottom: 0.75rem;
+    }
+    .finding-sec { border-left-color: var(--danger); }
+    .finding-perf { border-left-color: var(--warning); }
+    .finding-clean { border-left-color: var(--success); }
+    .finding-title {
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    .finding-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+    .code-fix {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      margin-top: 0.5rem;
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #a7f3d0;
+    }
+    .perf-meta { font-size: 0.75rem; color: var(--muted); text-align: right; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge">Commercial AI MVP</span>
+      <h1>AI Code Reviewer & Security Auditing Tool</h1>
+      <p class="subtitle">Single-pass lexical code scanner with OWASP security pattern detection & O(1) audit caching.</p>
+    </header>
+
+    <div class="grid">
+      <!-- Input Panel -->
+      <div class="card">
+        <h2 class="card-title">Code Input</h2>
+        <div class="form-group">
+          <label for="sampleSelect">Load Preset Code Snippet</label>
+          <select id="sampleSelect">
+            <option value="sqli">Vulnerable SQL & Hardcoded Key (JavaScript)</option>
+            <option value="perf">Inefficient Array Loop & InnerHTML XSS</option>
+            <option value="clean">Clean & Optimized ES6+ Code</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="codeEditor">Source Code</label>
+          <textarea id="codeEditor"></textarea>
+        </div>
+        <button id="auditBtn" class="btn-primary">Run AI Code Audit ⚡</button>
+      </div>
+
+      <!-- Analysis Panel -->
+      <div class="card">
+        <div class="card-title">
+          <span>Audit Findings</span>
+          <span id="issueCount" class="badge" style="background: rgba(239, 68, 68, 0.2); color: var(--danger);">0 Issues</span>
+        </div>
+
+        <div id="findingsContainer" style="min-height: 280px;"></div>
+        <div id="perfMeta" class="perf-meta">Audit completed in 0.00ms</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Bolt's Performance Optimizations:
+     * 1. Pre-compiled Regex Patterns: Audit rules compiled at script boot.
+     * 2. Single-pass Array Matcher: O(N) linear line processing.
+     * 3. Response Memoization: Cache hash maps for previously audited code.
+     */
+    const auditCache = new Map();
+
+    const PRECOMPILED_RULES = [
+      {
+        id: 'sec_hardcoded_key',
+        type: 'sec',
+        title: '🛡️ Hardcoded API Secret / Private Key',
+        regex: /(api_key|secret_key|auth_token)\s*=\s*['"][a-zA-Z0-9_\-]{8,}['"]/i,
+        desc: 'Exposing credentials in source code creates severe security leaks.',
+        fix: 'Use environment variables: process.env.API_KEY'
+      },
+      {
+        id: 'sec_sqli',
+        type: 'sec',
+        title: '🛡️ Potential SQL Injection Vulnerability',
+        regex: /SELECT\s+.*\s+FROM\s+.*\s+WHERE\s+.*=\s*'\s*\+/i,
+        desc: 'Concatenating user input directly into SQL queries allows database tampering.',
+        fix: 'Use parameterized queries with prepared statements.'
+      },
+      {
+        id: 'sec_xss',
+        type: 'sec',
+        title: '🛡️ XSS Risk (Unsafe innerHTML Assignment)',
+        regex: /\.innerHTML\s*=/i,
+        desc: 'Directly assigning raw text to innerHTML can execute malicious scripts.',
+        fix: 'Use textContent or DOMPurify.sanitize().'
+      },
+      {
+        id: 'perf_nested_loop',
+        type: 'perf',
+        title: '⚡ O(N²) Performance Bottleneck (Nested Loop)',
+        regex: /for\s*\(.*?\)\s*\{[\s\S]*?for\s*\(.*?\)/i,
+        desc: 'Nested loop over dataset creates quadratic execution time.',
+        fix: 'Convert outer lookups to a Set or Map for O(1) access.'
+      }
+    ];
+
+    const SAMPLES = {
+      sqli: `// API Handler\nconst API_KEY = "sk_live_998822331144";\n\nfunction getUser(userId) {\n  const query = "SELECT * FROM users WHERE id = '" + userId + "'";\n  return db.query(query);\n}`,
+      perf: `function processData(items) {\n  for (let i = 0; i < items.length; i++) {\n    for (let j = 0; j < items.length; j++) {\n      // O(N^2) search\n      if (items[i].id === items[j].refId) {}\n    }\n  }\n  document.getElementById('res').innerHTML = items.length;\n}`,
+      clean: `async function fetchUserData(userId) {\n  const response = await fetch(\`/api/users/\${encodeURIComponent(userId)}\`);\n  const user = await response.json();\n  document.getElementById('name').textContent = user.name;\n}`
+    };
+
+    const sampleSelect = document.getElementById('sampleSelect');
+    const codeEditor = document.getElementById('codeEditor');
+    const auditBtn = document.getElementById('auditBtn');
+    const findingsContainer = document.getElementById('findingsContainer');
+    const issueCount = document.getElementById('issueCount');
+    const perfMeta = document.getElementById('perfMeta');
+
+    codeEditor.value = SAMPLES.sqli;
+
+    sampleSelect.addEventListener('change', (e) => {
+      codeEditor.value = SAMPLES[e.target.value] || '';
+      runAudit();
+    });
+
+    function runAudit() {
+      const startTime = performance.now();
+      const code = codeEditor.value;
+
+      if (!code.trim()) {
+        findingsContainer.innerHTML = '<p style="color: var(--muted)">Enter code to begin audit.</p>';
+        issueCount.textContent = '0 Issues';
+        return;
+      }
+
+      // Check O(1) Cache
+      if (auditCache.has(code)) {
+        const cached = auditCache.get(code);
+        renderFindings(cached.findings, performance.now() - startTime, true);
+        return;
+      }
+
+      // Pre-compiled Single-pass regex evaluation
+      const findings = [];
+      PRECOMPILED_RULES.forEach(rule => {
+        if (rule.regex.test(code)) {
+          findings.push(rule);
+        }
+      });
+
+      auditCache.set(code, { findings });
+      const duration = performance.now() - startTime;
+      renderFindings(findings, duration, false);
+    }
+
+    function renderFindings(findings, duration, fromCache) {
+      issueCount.textContent = `${findings.length} Issue${findings.length === 1 ? '' : 's'}`;
+
+      if (findings.length === 0) {
+        findingsContainer.innerHTML = `
+          <div class="finding-item finding-clean">
+            <div class="finding-title" style="color: var(--success);">✨ Code Audit Passed Cleanly</div>
+            <div class="finding-desc">No security vulnerabilities or major performance bottlenecks detected in linear scan.</div>
+          </div>
+        `;
+      } else {
+        findingsContainer.innerHTML = findings.map(f => `
+          <div class="finding-item ${f.type === 'sec' ? 'finding-sec' : 'finding-perf'}">
+            <div class="finding-title">${f.title}</div>
+            <div class="finding-desc">${f.desc}</div>
+            <div class="code-fix">💡 Fix: ${f.fix}</div>
+          </div>
+        `).join('');
+      }
+
+      perfMeta.textContent = `Audit completed in ${duration.toFixed(2)}ms ${fromCache ? '(Cache)' : ''}`;
+    }
+
+    auditBtn.addEventListener('click', runAudit);
+    runAudit();
+  </script>
+</body>
+</html>
