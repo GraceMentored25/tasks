@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Customer Lead Scoring | Bolt ⚡ MVP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+  <div class="max-w-6xl mx-auto px-6 py-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between pb-6 mb-6 border-b border-slate-800">
+      <div>
+        <a href="../" class="text-xs text-sky-400 hover:text-sky-300 transition mb-1 inline-block">← Back to Workspace Hub</a>
+        <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+          <span>🎯 AI Customer Lead Scoring</span>
+          <span class="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-0.5 rounded-full">⚡ Bolt Optimized</span>
+        </h1>
+      </div>
+      <div class="text-right text-xs text-slate-400">
+        <div>Malt Ref: <span class="text-slate-200">#MALT-LEAD-AI-9012</span></div>
+        <div>TJM: <span class="text-emerald-400 font-semibold">600€ - 800€</span></div>
+      </div>
+    </div>
+
+    <!-- Presets -->
+    <div class="mb-6 flex flex-wrap gap-3 items-center">
+      <span class="text-xs font-semibold text-slate-400">Quick Preset Leads:</span>
+      <button onclick="loadPreset('enterprise')" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-medium text-slate-200 transition">🏢 Enterprise FinTech ($120k Budget)</button>
+      <button onclick="loadPreset('midmarket')" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-medium text-slate-200 transition">🚀 Mid-Market SaaS ($45k Budget)</button>
+      <button onclick="loadPreset('smb')" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-medium text-slate-200 transition">🏬 SMB E-commerce ($8k Budget)</button>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Input Parameters -->
+      <div class="lg:col-span-6 bg-slate-900 border border-slate-800 rounded-xl p-6">
+        <h2 class="text-lg font-semibold text-white mb-4">Lead Attributes & Signals</h2>
+
+        <div class="space-y-4 text-sm">
+          <div>
+            <label class="block text-slate-400 mb-1">Company Name</label>
+            <input type="text" id="companyName" value="Acme CyberCorp" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:border-sky-500 focus:outline-none">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-slate-400 mb-1">Company Size (Employees)</label>
+              <select id="companySize" onchange="debouncedCalculate()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:border-sky-500 focus:outline-none">
+                <option value="10">1 - 20 employees</option>
+                <option value="50">20 - 100 employees</option>
+                <option value="300" selected>100 - 500 employees</option>
+                <option value="1000">1000+ employees</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-slate-400 mb-1">Annual Budget (€)</label>
+              <select id="budget" onchange="debouncedCalculate()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:border-sky-500 focus:outline-none">
+                <option value="5000">&lt; 10,000 €</option>
+                <option value="25000">10,000 € - 50,000 €</option>
+                <option value="75000" selected>50,000 € - 100,000 €</option>
+                <option value="150000">100,000 € +</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-slate-400 mb-1">Implementation Urgency</label>
+              <select id="urgency" onchange="debouncedCalculate()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:border-sky-500 focus:outline-none">
+                <option value="low">Low (&gt; 6 months)</option>
+                <option value="medium">Medium (1 - 3 months)</option>
+                <option value="high" selected>Immediate (&lt; 1 month)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-slate-400 mb-1">Decision Maker Engaged?</label>
+              <select id="decisionMaker" onchange="debouncedCalculate()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:border-sky-500 focus:outline-none">
+                <option value="yes" selected>Yes (VP / C-Level)</option>
+                <option value="no">No (Evaluator only)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 mb-1">Tech Stack Match Score</label>
+            <input type="range" id="techStack" min="1" max="10" value="9" oninput="debouncedCalculate()" class="w-full accent-sky-500">
+            <div class="flex justify-between text-xs text-slate-500 mt-1">
+              <span>Low Match (1)</span>
+              <span id="techStackValue" class="text-sky-400 font-bold">9 / 10</span>
+              <span>Perfect Fit (10)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Panel -->
+      <div class="lg:col-span-6 space-y-6">
+        <!-- Score Card -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 flex items-center justify-between">
+          <div>
+            <span id="qualificationBadge" class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-2">HOT LEAD 🔥</span>
+            <h3 class="text-2xl font-extrabold text-white" id="leadScoreTitle">Score: 92 / 100</h3>
+            <p class="text-xs text-slate-400 mt-1" id="leadSubtitle">High probability conversion within 30 days.</p>
+          </div>
+          <div class="text-right">
+            <div class="text-xs text-slate-500">Calc Latency</div>
+            <div id="calcLatency" class="text-sm font-bold text-amber-400">0.20 ms</div>
+          </div>
+        </div>
+
+        <!-- Conversion Matrix & Next Steps -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+          <h4 class="text-sm font-semibold text-slate-300">AI Deal Conversion Breakdown</h4>
+
+          <div class="space-y-3">
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="text-slate-400">Win Probability</span>
+                <span id="winProb" class="font-bold text-sky-400">88%</span>
+              </div>
+              <div class="w-full bg-slate-950 rounded-full h-2">
+                <div id="winProbBar" class="bg-sky-500 h-2 rounded-full transition-all duration-300" style="width: 88%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="text-slate-400">Estimated Deal Value</span>
+                <span id="estDealVal" class="font-bold text-emerald-400">75,000 €</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-slate-800">
+            <h5 class="text-xs font-semibold uppercase text-slate-400 mb-2">Recommended Next Actions</h5>
+            <ul id="recommendedActions" class="space-y-2 text-xs text-slate-300">
+              <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> Schedule executive demo call with VP Decision Maker.</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> Dispatch custom enterprise security compliance package.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ⚡ BOLT PERFORMANCE OPTIMIZATION: Memoized Vector Matrix Lookup Cache
+    const scoreCache = new Map();
+
+    function computeScoreMemoized(size, budget, urgency, decisionMaker, techStack) {
+      const key = `${size}_${budget}_${urgency}_${decisionMaker}_${techStack}`;
+      if (scoreCache.has(key)) {
+        return scoreCache.get(key);
+      }
+
+      // Normalized scoring algorithm O(1)
+      let score = 0;
+      score += Math.min(30, (budget / 150000) * 30);
+      score += size >= 300 ? 25 : size >= 50 ? 18 : 10;
+      score += urgency === 'high' ? 20 : urgency === 'medium' ? 12 : 5;
+      score += decisionMaker === 'yes' ? 15 : 5;
+      score += (techStack / 10) * 10;
+
+      const finalScore = Math.min(100, Math.round(score));
+      scoreCache.set(key, finalScore);
+      return finalScore;
+    }
+
+    let debounceTimer;
+    function debouncedCalculate() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(calculateScore, 30);
+    }
+
+    function calculateScore() {
+      const startTime = performance.now();
+
+      const size = parseInt(document.getElementById('companySize').value);
+      const budget = parseInt(document.getElementById('budget').value);
+      const urgency = document.getElementById('urgency').value;
+      const decisionMaker = document.getElementById('decisionMaker').value;
+      const techStack = parseInt(document.getElementById('techStack').value);
+
+      document.getElementById('techStackValue').innerText = `${techStack} / 10`;
+
+      const score = computeScoreMemoized(size, budget, urgency, decisionMaker, techStack);
+
+      const title = document.getElementById('leadScoreTitle');
+      const badge = document.getElementById('qualificationBadge');
+      const winProb = document.getElementById('winProb');
+      const winProbBar = document.getElementById('winProbBar');
+      const estDealVal = document.getElementById('estDealVal');
+      const actions = document.getElementById('recommendedActions');
+
+      title.innerText = `Score: ${score} / 100`;
+      estDealVal.innerText = `${budget.toLocaleString()} €`;
+
+      let prob = Math.round(score * 0.92);
+      winProb.innerText = `${prob}%`;
+      winProbBar.style.width = `${prob}%`;
+
+      if (score >= 80) {
+        badge.className = 'inline-block px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-2';
+        badge.innerText = 'HOT LEAD 🔥';
+        actions.innerHTML = `<li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> Schedule executive demo call with VP Decision Maker.</li><li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> Dispatch custom enterprise security compliance package.</li>`;
+      } else if (score >= 50) {
+        badge.className = 'inline-block px-3 py-1 rounded-full text-xs font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20 mb-2';
+        badge.innerText = 'WARM LEAD ⚡';
+        actions.innerHTML = `<li class="flex items-center gap-2"><span class="text-sky-400">✓</span> Send targeted case studies and feature breakdown.</li><li class="flex items-center gap-2"><span class="text-sky-400">✓</span> Enroll in 14-day nurture email campaign.</li>`;
+      } else {
+        badge.className = 'inline-block px-3 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-400 border border-slate-500/20 mb-2';
+        badge.innerText = 'COLD LEAD ❄️';
+        actions.innerHTML = `<li class="flex items-center gap-2"><span class="text-slate-400">✓</span> Assign to self-serve newsletter drip.</li>`;
+      }
+
+      const duration = (performance.now() - startTime).toFixed(2);
+      document.getElementById('calcLatency').innerText = `${duration} ms`;
+    }
+
+    function loadPreset(type) {
+      if (type === 'enterprise') {
+        document.getElementById('companyName').value = 'Global Bank Systems';
+        document.getElementById('companySize').value = '1000';
+        document.getElementById('budget').value = '150000';
+        document.getElementById('urgency').value = 'high';
+        document.getElementById('decisionMaker').value = 'yes';
+        document.getElementById('techStack').value = '10';
+      } else if (type === 'midmarket') {
+        document.getElementById('companyName').value = 'CloudScale SaaS';
+        document.getElementById('companySize').value = '300';
+        document.getElementById('budget').value = '25000';
+        document.getElementById('urgency').value = 'medium';
+        document.getElementById('decisionMaker').value = 'yes';
+        document.getElementById('techStack').value = '7';
+      } else {
+        document.getElementById('companyName').value = 'Local Store Shop';
+        document.getElementById('companySize').value = '10';
+        document.getElementById('budget').value = '5000';
+        document.getElementById('urgency').value = 'low';
+        document.getElementById('decisionMaker').value = 'no';
+        document.getElementById('techStack').value = '4';
+      }
+      calculateScore();
+    }
+
+    window.addEventListener('DOMContentLoaded', calculateScore);
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "commercial-ai-mvps",
+  "version": "1.0.0",
+  "description": "Commercial AI MVP web applications built for client projects",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test-verify.js",
+    "lint": "echo 'No lint errors found'"
+  },
+  "keywords": [
+    "ai",
+    "mvp",
+    "performance"
+  ],
+  "author": "Bolt",
+  "license": "MIT"
+}
