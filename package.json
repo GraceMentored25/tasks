@@ -1,0 +1,13 @@
+{
+  "name": "commercial-ai-mvps",
+  "version": "1.0.0",
+  "description": "Commercial AI MVP web applications built and performance-optimized for Malt & client projects.",
+  "main": "test-verify.js",
+  "scripts": {
+    "test": "node test-verify.js",
+    "verify": "python3 /home/jules/self_created_tools/verify_workspace.py"
+  },
+  "keywords": ["ai", "mvp", "malt", "performance", "bolt"],
+  "author": "Bolt ⚡",
+  "license": "MIT"
+}
