@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Customer Lead Scoring Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+  <header class="border-b border-slate-800 bg-slate-950/80 px-6 py-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <span class="text-2xl">🎯</span>
+      <h1 class="text-xl font-bold bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">AI Customer Lead Scoring</h1>
+      <span class="bg-emerald-500/20 text-emerald-300 text-xs px-2.5 py-1 rounded-full border border-emerald-500/30">Malt MVP #MLT-74102</span>
+    </div>
+    <a href="../index.html" class="text-xs text-slate-400 hover:text-white transition">← Return to Portal</a>
+  </header>
+
+  <main class="max-w-7xl mx-auto p-6 space-y-6">
+    <!-- Action Controls Banner -->
+    <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-5 shadow-lg flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <h2 class="text-lg font-semibold text-slate-200">Bulk Lead Evaluation Engine</h2>
+        <p class="text-xs text-slate-400">Evaluate intent signals, revenue potential, and closing probability in real-time.</p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button id="btn-batch-score" class="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition flex items-center gap-2">
+          <span>⚡ Run Bulk Score Processing</span>
+        </button>
+        <button id="btn-add-sample" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-sm px-4 py-2 rounded-lg transition">
+          + Add Random Prospect
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter Tabs & Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60">
+        <span class="text-xs text-slate-400">Total Prospects</span>
+        <div id="stat-total" class="text-2xl font-bold text-white mt-1">0</div>
+      </div>
+      <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60">
+        <span class="text-xs text-emerald-400">🔥 Hot Leads (Score >= 80)</span>
+        <div id="stat-hot" class="text-2xl font-bold text-emerald-400 mt-1">0</div>
+      </div>
+      <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60">
+        <span class="text-xs text-amber-400">⚡ Warm Leads (50-79)</span>
+        <div id="stat-warm" class="text-2xl font-bold text-amber-400 mt-1">0</div>
+      </div>
+      <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60">
+        <span class="text-xs text-slate-400">❄️ Cold Leads (< 50)</span>
+        <div id="stat-cold" class="text-2xl font-bold text-slate-400 mt-1">0</div>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="flex items-center gap-2 text-xs">
+      <span class="text-slate-400 font-medium">Filter by Status:</span>
+      <button data-filter="all" class="filter-btn bg-emerald-600 text-white px-3 py-1 rounded-md transition">All</button>
+      <button data-filter="hot" class="filter-btn bg-slate-800 text-slate-300 hover:bg-slate-700 px-3 py-1 rounded-md transition">Hot Leads</button>
+      <button data-filter="warm" class="filter-btn bg-slate-800 text-slate-300 hover:bg-slate-700 px-3 py-1 rounded-md transition">Warm Leads</button>
+      <button data-filter="cold" class="filter-btn bg-slate-800 text-slate-300 hover:bg-slate-700 px-3 py-1 rounded-md transition">Cold Leads</button>
+    </div>
+
+    <!-- Prospects Grid -->
+    <div id="prospects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Injected with DocumentFragment -->
+    </div>
+  </main>
+
+  <script>
+    // --- BOLT PERFORMANCE ENGINE ---
+    // Rule Evaluation Cache map
+    const scoreRuleCache = new Map();
+
+    let currentFilter = 'all';
+
+    let prospectsData = [
+      { id: 1, name: "Acme Corp SaaS", contact: "sarah.dev@acme.io", size: "250-500", budget: "$120k", webVisits: 18, requestedDemo: true, techStack: ["AWS", "Kubernetes", "React"] },
+      { id: 2, name: "TechStart Fintech", contact: "alex.tech@start.co", size: "50-100", budget: "$45k", webVisits: 8, requestedDemo: true, techStack: ["Stripe", "Node.js"] },
+      { id: 3, name: "Global Logistics Ltd", contact: "m.dupont@logistics.fr", size: "1000+", budget: "$300k", webVisits: 4, requestedDemo: false, techStack: ["SAP", "Oracle"] },
+      { id: 4, name: "Apex Design Studio", contact: "hello@apex.design", size: "10-20", budget: "$12k", webVisits: 2, requestedDemo: false, techStack: ["Figma"] },
+      { id: 5, name: "CloudScale Infra", contact: "cto@cloudscale.net", size: "100-250", budget: "$85k", webVisits: 24, requestedDemo: true, techStack: ["Terraform", "AWS"] },
+      { id: 6, name: "BioHealth Pharma", contact: "contact@biohealth.org", size: "500-1000", budget: "$180k", webVisits: 12, requestedDemo: true, techStack: ["Salesforce", "Python"] }
+    ];
+
+    function calculateScore(p) {
+      const cacheKey = `${p.size}-${p.budget}-${p.webVisits}-${p.requestedDemo}`;
+      if (scoreRuleCache.has(cacheKey)) {
+        return scoreRuleCache.get(cacheKey);
+      }
+
+      let score = 30; // base score
+      if (p.requestedDemo) score += 35;
+      if (p.webVisits > 15) score += 20;
+      else if (p.webVisits > 5) score += 10;
+
+      if (p.budget.includes('300k') || p.budget.includes('180k') || p.budget.includes('120k')) score += 15;
+
+      const result = {
+        score: Math.min(100, score),
+        category: score >= 80 ? 'Hot' : (score >= 50 ? 'Warm' : 'Cold'),
+        conversionRate: Math.min(95, Math.floor(score * 0.9)) + '%'
+      };
+
+      scoreRuleCache.set(cacheKey, result);
+      return result;
+    }
+
+    // High performance render with DocumentFragment
+    function renderGrid() {
+      const grid = document.getElementById('prospects-grid');
+      const fragment = document.createDocumentFragment();
+
+      let countTotal = 0, countHot = 0, countWarm = 0, countCold = 0;
+
+      prospectsData.forEach(p => {
+        const evalRes = calculateScore(p);
+        countTotal++;
+        if (evalRes.category === 'Hot') countHot++;
+        if (evalRes.category === 'Warm') countWarm++;
+        if (evalRes.category === 'Cold') countCold++;
+
+        if (currentFilter !== 'all' && evalRes.category.toLowerCase() !== currentFilter) {
+          return;
+        }
+
+        const card = document.createElement('div');
+        card.className = "bg-slate-800/80 border border-slate-700/60 rounded-xl p-5 shadow-lg space-y-3 hover:border-slate-600 transition";
+
+        const badgeColor = evalRes.category === 'Hot' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' :
+                          (evalRes.category === 'Warm' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' : 'bg-slate-700/50 text-slate-400 border-slate-600');
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div>
+              <h3 class="font-bold text-slate-100 text-base">${p.name}</h3>
+              <p class="text-xs text-slate-400">${p.contact}</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full border ${badgeColor}">
+              ${evalRes.category} (${evalRes.score} pts)
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-xs bg-slate-900/60 p-2.5 rounded-lg">
+            <div><span class="text-slate-500">Company Size:</span> <span class="text-slate-200 font-medium">${p.size}</span></div>
+            <div><span class="text-slate-500">Est. Budget:</span> <span class="text-slate-200 font-medium">${p.budget}</span></div>
+            <div><span class="text-slate-500">Web Sessions:</span> <span class="text-slate-200 font-medium">${p.webVisits}</span></div>
+            <div><span class="text-slate-500">Demo Request:</span> <span class="text-slate-200 font-medium">${p.requestedDemo ? 'Yes ✅' : 'No'}</span></div>
+          </div>
+
+          <div class="flex items-center justify-between text-xs pt-2 border-t border-slate-700/40">
+            <span class="text-slate-400">Est. Win Rate: <strong class="text-emerald-400">${evalRes.conversionRate}</strong></span>
+            <button class="text-blue-400 hover:underline">View CRM Profile →</button>
+          </div>
+        `;
+        fragment.appendChild(card);
+      });
+
+      document.getElementById('stat-total').textContent = countTotal;
+      document.getElementById('stat-hot').textContent = countHot;
+      document.getElementById('stat-warm').textContent = countWarm;
+      document.getElementById('stat-cold').textContent = countCold;
+
+      grid.innerHTML = '';
+      grid.appendChild(fragment);
+    }
+
+    // Non-blocking Async Batch processing
+    document.getElementById('btn-batch-score').addEventListener('click', () => {
+      const btn = document.getElementById('btn-batch-score');
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Processing Batch...</span>';
+
+      // Simulate chunked non-blocking background calculations
+      setTimeout(() => {
+        prospectsData.forEach(p => {
+          p.webVisits += Math.floor(Math.random() * 5);
+        });
+        renderGrid();
+        btn.disabled = false;
+        btn.innerHTML = '<span>⚡ Run Bulk Score Processing</span>';
+      }, 300);
+    });
+
+    document.getElementById('btn-add-sample').addEventListener('click', () => {
+      const nextId = prospectsData.length + 1;
+      const sampleNames = ["DataFlow AI", "CyberShield Security", "FinPay Solutions", "RetailOps Tech"];
+      const randomName = sampleNames[Math.floor(Math.random() * sampleNames.length)] + " #" + nextId;
+
+      prospectsData.push({
+        id: nextId,
+        name: randomName,
+        contact: `contact@prospect${nextId}.com`,
+        size: "100-500",
+        budget: "$" + (Math.floor(Math.random() * 150) + 30) + "k",
+        webVisits: Math.floor(Math.random() * 25) + 1,
+        requestedDemo: Math.random() > 0.4,
+        techStack: ["Cloud", "AI"]
+      });
+
+      renderGrid();
+    });
+
+    // Filter Listeners
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          b.className = 'filter-btn bg-slate-800 text-slate-300 hover:bg-slate-700 px-3 py-1 rounded-md transition';
+        });
+        e.target.className = 'filter-btn bg-emerald-600 text-white px-3 py-1 rounded-md transition';
+        currentFilter = e.target.getAttribute('data-filter');
+        renderGrid();
+      });
+    });
+
+    renderGrid();
+  </script>
+</body>
+</html>
