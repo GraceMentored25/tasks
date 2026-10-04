@@ -1,0 +1,17 @@
+{
+  "name": "ai-mvps-workspace",
+  "version": "1.0.0",
+  "description": "Commercial AI MVP Web Applications Workspace",
+  "main": "index.html",
+  "scripts": {
+    "test": "node test-verify.js"
+  },
+  "keywords": [
+    "ai",
+    "mvp",
+    "commercial",
+    "performance"
+  ],
+  "author": "Bolt ⚡",
+  "license": "MIT"
+}

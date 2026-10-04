@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Code Reviewer & Security Assistant | Workspace</title>
+  <style>
+    :root {
+      --bg-primary: #0d1117;
+      --bg-card: #161b22;
+      --bg-input: #21262d;
+      --accent: #1f6feb;
+      --accent-hover: #388bfd;
+      --text-main: #f0f6fc;
+      --text-muted: #8b949e;
+      --border-color: #30363d;
+      --critical: #f85149;
+      --warning: #d29922;
+      --info: #58a6ff;
+      --success: #3fb950;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      padding: 2rem 1rem;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .badge {
+      background: rgba(31, 111, 235, 0.15);
+      color: var(--info);
+      border: 1px solid var(--accent);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: 8px;
+      padding: 1.25rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--info);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    select, textarea {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-main);
+      padding: 0.65rem 0.85rem;
+      font-size: 0.9rem;
+      font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+    }
+
+    textarea {
+      min-height: 380px;
+      resize: vertical;
+      line-height: 1.5;
+      tab-size: 2;
+    }
+
+    .btn {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      padding: 0.65rem 1.2rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn:hover {
+      background: var(--accent-hover);
+    }
+
+    .issue-card {
+      background: var(--bg-input);
+      border-radius: 6px;
+      padding: 0.85rem;
+      margin-bottom: 0.75rem;
+      border-left: 4px solid var(--border-color);
+    }
+
+    .issue-card.critical {
+      border-left-color: var(--critical);
+    }
+
+    .issue-card.warning {
+      border-left-color: var(--warning);
+    }
+
+    .issue-card.optimization {
+      border-left-color: var(--info);
+    }
+
+    .issue-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .tag-critical { color: var(--critical); }
+    .tag-warning { color: var(--warning); }
+    .tag-optimization { color: var(--info); }
+
+    .issue-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .stats-bar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .stat-pill {
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    nav.breadcrumb {
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    nav.breadcrumb a {
+      color: var(--info);
+      text-decoration: none;
+    }
+
+    nav.breadcrumb a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="breadcrumb">
+      <a href="../index.html">&larr; Back to Workspace Hub</a>
+    </nav>
+
+    <header>
+      <div>
+        <h1>🛡️ AI Code Reviewer & Security Assistant</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
+          Automated static code security scanning, performance audit, and AI review suggestions.
+        </p>
+      </div>
+      <div class="badge">Malt Ref #MLT-93015 | TJM 650€ - 850€</div>
+    </header>
+
+    <div class="grid">
+      <!-- Code Editor Column -->
+      <div class="card">
+        <div class="card-title">
+          <span>💻 Code Input & Inspector</span>
+          <div style="width: 220px;">
+            <select id="sampleSelect">
+              <option value="vulnerable">Sample: Security Vulnerabilities</option>
+              <option value="performance">Sample: O(N²) Performance Issue</option>
+              <option value="clean">Sample: Clean Secure Code</option>
+            </select>
+          </div>
+        </div>
+
+        <textarea id="codeEditor" spellcheck="false"></textarea>
+
+        <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+          <button class="btn" id="reviewBtn">⚡ Run AI Code Review</button>
+          <span style="font-size: 0.8rem; color: var(--text-muted);" id="scanTime">Last scan: &lt; 1ms</span>
+        </div>
+      </div>
+
+      <!-- Analysis Results Column -->
+      <div class="card">
+        <div class="card-title">🔍 AI Review Findings</div>
+
+        <div class="stats-bar">
+          <div class="stat-pill"><span style="color: var(--critical);">●</span> <strong id="critCount">0</strong> Critical</div>
+          <div class="stat-pill"><span style="color: var(--warning);">●</span> <strong id="warnCount">0</strong> Warnings</div>
+          <div class="stat-pill"><span style="color: var(--info);">●</span> <strong id="optCount">0</strong> Optimizations</div>
+        </div>
+
+        <div id="findingsContainer">
+          <!-- Findings populated via DocumentFragment -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Pre-compiled regex scanning patterns for O(1) matching speed
+    const RULES = [
+      {
+        id: 'eval-used',
+        severity: 'critical',
+        pattern: /\beval\s*\(/g,
+        title: 'Arbitrary Code Execution (eval)',
+        description: 'Using eval() presents a severe remote code execution security flaw. Replace with safe parsing functions.'
+      },
+      {
+        id: 'sql-injection',
+        severity: 'critical',
+        pattern: /(SELECT|INSERT|UPDATE|DELETE).*\$\{.*\}|SELECT.*\+.*FROM/i,
+        title: 'Potential SQL Injection',
+        description: 'Constructing SQL queries with string interpolation enables SQL injection. Use parameterized queries instead.'
+      },
+      {
+        id: 'hardcoded-secret',
+        severity: 'critical',
+        pattern: /(api_key|secret|password|auth_token)\s*=\s*['"][a-zA-Z0-9_\-]{8,}['"]/i,
+        title: 'Hardcoded API Secret',
+        description: 'Sensitive credentials exposed in client-side source code. Move secrets to environment variables.'
+      },
+      {
+        id: 'nested-loop-length',
+        severity: 'warning',
+        pattern: /for\s*\(.*length.*\)\s*\{[\s\S]*for\s*\(.*length.*\)/g,
+        title: 'Potential O(N²) Time Complexity',
+        description: 'Nested array iterations can block the main thread. Consider using a Map or Set lookup table.'
+      },
+      {
+        id: 'inner-html-assignment',
+        severity: 'warning',
+        pattern: /\.innerHTML\s*=/g,
+        title: 'Unsanitized innerHTML Assignment (XSS Risk)',
+        description: 'Directly assigning un-sanitized content to innerHTML introduces XSS vulnerabilities. Use textContent or DOM batching.'
+      },
+      {
+        id: 'var-declaration',
+        severity: 'optimization',
+        pattern: /\bvar\s+[a-zA-Z_$]/g,
+        title: 'Legacy "var" Keyword',
+        description: 'Replace "var" declarations with "const" or "let" to prevent function-scope variable hoisting bugs.'
+      }
+    ];
+
+    const samples = {
+      vulnerable: `// Sample with security vulnerabilities
+function handleUserLogin(req, res) {
+  const apiKey = "sk_live_9876543210abcdef"; // Hardcoded secret
+  const query = "SELECT * FROM users WHERE email = '" + req.body.email + "'";
+
+  // Unsafe evaluation
+  const result = eval(req.body.customScript);
+  document.getElementById("output").innerHTML = req.body.bio;
+
+  return result;
+}`,
+      performance: `// Sample with performance bottlenecks
+function findMatchingOrders(users, orders) {
+  var results = [];
+  for (var i = 0; i < users.length; i++) {
+    for (var j = 0; j < orders.length; j++) {
+      if (users[i].id === orders[j].userId) {
+        results.push(orders[j]);
+      }
+    }
+  }
+  return results;
+}`,
+      clean: `// Clean and secure sample code
+function findMatchingOrdersOptimized(users, orders) {
+  const userMap = new Set(users.map(u => u.id));
+  return orders.filter(order => userMap.has(order.userId));
+}`
+    };
+
+    const codeEditor = document.getElementById('codeEditor');
+    const sampleSelect = document.getElementById('sampleSelect');
+    const reviewBtn = document.getElementById('reviewBtn');
+    const findingsContainer = document.getElementById('findingsContainer');
+    const scanTimeEl = document.getElementById('scanTime');
+
+    const critCountEl = document.getElementById('critCount');
+    const warnCountEl = document.getElementById('warnCount');
+    const optCountEl = document.getElementById('optCount');
+
+    function analyzeCode() {
+      const code = codeEditor.value;
+      const t0 = performance.now();
+
+      const findings = [];
+      let critCount = 0;
+      let warnCount = 0;
+      let optCount = 0;
+
+      // Linear pass rule check
+      RULES.forEach(rule => {
+        rule.pattern.lastIndex = 0; // reset regex index
+        if (rule.pattern.test(code)) {
+          findings.push(rule);
+          if (rule.severity === 'critical') critCount++;
+          else if (rule.severity === 'warning') warnCount++;
+          else optCount++;
+        }
+      });
+
+      const t1 = performance.now();
+      scanTimeEl.textContent = `Last scan: ${(t1 - t0).toFixed(2)}ms`;
+
+      critCountEl.textContent = critCount;
+      warnCountEl.textContent = warnCount;
+      optCountEl.textContent = optCount;
+
+      // Batch DOM rendering with DocumentFragment
+      const fragment = document.createDocumentFragment();
+
+      if (findings.length === 0) {
+        const div = document.createElement('div');
+        div.className = 'issue-card';
+        div.style.borderLeftColor = 'var(--success)';
+        div.innerHTML = `
+          <div class="issue-header" style="color: var(--success);">✓ Clean Code Detected</div>
+          <div class="issue-desc">No security vulnerabilities or major performance bottlenecks identified by static scanning rules.</div>
+        `;
+        fragment.appendChild(div);
+      } else {
+        findings.forEach(item => {
+          const div = document.createElement('div');
+          div.className = `issue-card ${item.severity}`;
+          div.innerHTML = `
+            <div class="issue-header">
+              <span>${item.title}</span>
+              <span class="tag-${item.severity}">${item.severity.toUpperCase()}</span>
+            </div>
+            <div class="issue-desc">${item.description}</div>
+          `;
+          fragment.appendChild(div);
+        });
+      }
+
+      findingsContainer.innerHTML = '';
+      findingsContainer.appendChild(fragment);
+    }
+
+    // Debounce for smooth typing in code editor
+    function debounce(fn, delay) {
+      let timer;
+      return function(...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn.apply(this, args), delay);
+      };
+    }
+
+    codeEditor.addEventListener('input', debounce(analyzeCode, 200));
+
+    sampleSelect.addEventListener('change', () => {
+      codeEditor.value = samples[sampleSelect.value];
+      analyzeCode();
+    });
+
+    reviewBtn.addEventListener('click', analyzeCode);
+
+    // Initial load
+    codeEditor.value = samples.vulnerable;
+    analyzeCode();
+  </script>
+</body>
+</html>
