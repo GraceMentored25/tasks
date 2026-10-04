@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Customer Lead Scoring & Enrichment | Workspace</title>
+  <style>
+    :root {
+      --bg-primary: #090d16;
+      --bg-card: #131b2e;
+      --bg-input: #1e293b;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #1e293b;
+      --hot: #10b981;
+      --warm: #f59e0b;
+      --cold: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      padding: 2rem 1rem;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .badge {
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 260px;
+    }
+
+    input, select {
+      background: var(--bg-card);
+      border: 1px solid #334155;
+      color: var(--text-main);
+      padding: 0.65rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    input:focus, select:focus {
+      outline: 2px solid var(--accent);
+      border-color: transparent;
+    }
+
+    .btn {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      padding: 0.65rem 1.2rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn:hover {
+      background: var(--accent-hover);
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid #1e293b;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    .stat-val {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-lbl {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-top: 0.25rem;
+    }
+
+    .table-container {
+      background: var(--bg-card);
+      border-radius: 8px;
+      border: 1px solid #1e293b;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: #0f172a;
+      color: var(--text-muted);
+      font-weight: 600;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .score-badge {
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: inline-block;
+    }
+
+    .score-hot {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--hot);
+      border: 1px solid var(--hot);
+    }
+
+    .score-warm {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warm);
+      border: 1px solid var(--warm);
+    }
+
+    .score-cold {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--cold);
+      border: 1px solid var(--cold);
+    }
+
+    nav.breadcrumb {
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    nav.breadcrumb a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    nav.breadcrumb a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="breadcrumb">
+      <a href="../index.html">&larr; Back to Workspace Hub</a>
+    </nav>
+
+    <header>
+      <div>
+        <h1>🎯 AI Customer Lead Scoring & Enrichment Platform</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
+          Real-time conversion scoring, async batch evaluation, and automated B2B profile enrichment.
+        </p>
+      </div>
+      <div class="badge">Malt Ref #MLT-74102 | TJM 600€ - 800€</div>
+    </header>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-val" id="totalLeads">0</div>
+        <div class="stat-lbl">Total Leads Loaded</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color: var(--hot);" id="hotLeads">0</div>
+        <div class="stat-lbl">Hot Leads (&ge; 80%)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color: var(--warm);" id="warmLeads">0</div>
+        <div class="stat-lbl">Warm Leads (50% - 79%)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color: var(--cold);" id="coldLeads">0</div>
+        <div class="stat-lbl">Cold Leads (&lt; 50%)</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search by lead name, company, or domain..." style="width: 100%;">
+      </div>
+
+      <div>
+        <select id="filterCategory">
+          <option value="ALL">All Categories</option>
+          <option value="HOT">Hot Leads Only</option>
+          <option value="WARM">Warm Leads Only</option>
+          <option value="COLD">Cold Leads Only</option>
+        </select>
+      </div>
+
+      <button class="btn" id="generateBatchBtn">⚡ Run AI Batch Rescore</button>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Lead Contact</th>
+            <th>Company</th>
+            <th>Employees</th>
+            <th>Budget Estimate</th>
+            <th>Intent Score</th>
+            <th>AI Qualification</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="leadTableBody">
+          <!-- Dynamically populated -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // Initial lead dataset
+    const rawLeads = [
+      { id: 1, name: 'Claire Dubois', company: 'Nexus FinTech', employees: 250, budget: '$45,000', tech: 'React, Node, Cloud', sizeWeight: 0.85, intentScore: 92 },
+      { id: 2, name: 'Marc Dupont', company: 'Solaria Tech', employees: 45, budget: '$12,000', tech: 'Python, Django', sizeWeight: 0.6, intentScore: 78 },
+      { id: 3, name: 'Sophie Bernard', company: 'Global Logistics SA', employees: 1200, budget: '$120,000', tech: 'Java, Oracle, Kubernetes', sizeWeight: 0.95, intentScore: 88 },
+      { id: 4, name: 'Antoine Moreau', company: 'SmallBiz Web', employees: 8, budget: '$2,500', tech: 'WordPress', sizeWeight: 0.3, intentScore: 35 },
+      { id: 5, name: 'Elena Rostova', company: 'DataWave AI', employees: 180, budget: '$60,000', tech: 'Python, PyTorch, AWS', sizeWeight: 0.8, intentScore: 95 },
+      { id: 6, name: 'Julien Laurent', company: 'BioHealth Labs', employees: 500, budget: '$85,000', tech: 'SAP, Azure', sizeWeight: 0.9, intentScore: 62 },
+      { id: 7, name: 'Amandine Petit', company: 'Creative Design Studio', employees: 15, budget: '$5,000', tech: 'Figma, Next.js', sizeWeight: 0.4, intentScore: 42 },
+      { id: 8, name: 'Thomas Lefebvre', company: 'CyberShield Systems', employees: 310, budget: '$95,000', tech: 'Go, GCP, Docker', sizeWeight: 0.88, intentScore: 89 }
+    ];
+
+    // Memoized scoring calculation logic
+    const scoreMemoMap = new Map();
+
+    function calculateLeadScore(lead) {
+      const key = `${lead.id}-${lead.employees}-${lead.intentScore}`;
+      if (scoreMemoMap.has(key)) {
+        return scoreMemoMap.get(key);
+      }
+
+      // Weighted scoring model: 50% intent, 35% company size, 15% budget indicator
+      const finalScore = Math.min(99, Math.round((lead.intentScore * 0.5) + (lead.sizeWeight * 100 * 0.35) + 15));
+
+      let category = 'COLD';
+      if (finalScore >= 80) category = 'HOT';
+      else if (finalScore >= 50) category = 'WARM';
+
+      const result = { finalScore, category };
+      scoreMemoMap.set(key, result);
+      return result;
+    }
+
+    const searchInput = document.getElementById('searchInput');
+    const filterCategory = document.getElementById('filterCategory');
+    const generateBatchBtn = document.getElementById('generateBatchBtn');
+    const leadTableBody = document.getElementById('leadTableBody');
+
+    function renderLeads() {
+      const query = searchInput.value.toLowerCase().trim();
+      const catFilter = filterCategory.value;
+
+      let hotCount = 0;
+      let warmCount = 0;
+      let coldCount = 0;
+
+      // Batch DOM rendering with DocumentFragment
+      const fragment = document.createDocumentFragment();
+
+      rawLeads.forEach(lead => {
+        const { finalScore, category } = calculateLeadScore(lead);
+
+        if (category === 'HOT') hotCount++;
+        else if (category === 'WARM') warmCount++;
+        else coldCount++;
+
+        // Filter evaluation
+        if (catFilter !== 'ALL' && category !== catFilter) return;
+        if (query && !lead.name.toLowerCase().includes(query) && !lead.company.toLowerCase().includes(query)) return;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${lead.name}</strong></td>
+          <td>${lead.company}</td>
+          <td>${lead.employees} emp.</td>
+          <td>${lead.budget}</td>
+          <td>${lead.intentScore}/100</td>
+          <td>
+            <span class="score-badge score-${category.toLowerCase()}">${category} (${finalScore}%)</span>
+          </td>
+          <td>
+            <button class="btn" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;" onclick="enrichLead(${lead.id})">⚡ Enrich AI Profile</button>
+          </td>
+        `;
+        fragment.appendChild(tr);
+      });
+
+      // Update counter cards
+      document.getElementById('totalLeads').textContent = rawLeads.length;
+      document.getElementById('hotLeads').textContent = hotCount;
+      document.getElementById('warmLeads').textContent = warmCount;
+      document.getElementById('coldLeads').textContent = coldCount;
+
+      leadTableBody.innerHTML = '';
+      if (fragment.children.length === 0) {
+        const emptyTr = document.createElement('tr');
+        emptyTr.innerHTML = `<td colspan="7" style="text-align:center; color: var(--text-muted); padding: 2rem;">No matching leads found.</td>`;
+        leadTableBody.appendChild(emptyTr);
+      } else {
+        leadTableBody.appendChild(fragment);
+      }
+    }
+
+    // Debounced search event listener
+    function debounce(fn, delay) {
+      let t;
+      return function(...args) {
+        clearTimeout(t);
+        t = setTimeout(() => fn.apply(this, args), delay);
+      };
+    }
+
+    searchInput.addEventListener('input', debounce(renderLeads, 150));
+    filterCategory.addEventListener('change', renderLeads);
+
+    // AI Enrichment simulation
+    window.enrichLead = function(id) {
+      const lead = rawLeads.find(l => l.id === id);
+      if (!lead) return;
+      alert(`⚡ AI Profile Enrichment for ${lead.company}:\n\n- Tech Stack: ${lead.tech}\n- Recommended Pitch: "Automate your ${lead.tech.split(',')[0]} workflow with enterprise AI triggers."\n- Decision Maker Probability: 94%`);
+    };
+
+    // Async Chunked Batch Rescore simulation
+    generateBatchBtn.addEventListener('click', () => {
+      generateBatchBtn.disabled = true;
+      generateBatchBtn.innerHTML = '⚡ Processing Batch...';
+
+      // Simulate chunked scoring processing
+      requestAnimationFrame(() => {
+        rawLeads.forEach(l => {
+          l.intentScore = Math.min(99, Math.max(30, l.intentScore + Math.floor(Math.random() * 11) - 5));
+        });
+        scoreMemoMap.clear(); // invalidate cache for updated records
+        renderLeads();
+
+        generateBatchBtn.disabled = false;
+        generateBatchBtn.innerHTML = '⚡ Run AI Batch Rescore';
+      });
+    });
+
+    // Initial render
+    renderLeads();
+  </script>
+</body>
+</html>
