@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;">
+  <title>AI Code & Performance Auditor - Dashboard Web</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo-area">
+        <span class="badge">⚡ Bolt High Performance</span>
+        <h1>AI Code & Performance Auditor</h1>
+      </div>
+      <p class="subtitle">Détecteur de failles de sécurité, goulots d'étranglement & refactoring IA</p>
+    </header>
+
+    <main class="main-layout">
+      <section class="editor-section">
+        <div class="editor-header">
+          <h2>Éditeur de Code Source</h2>
+          <select id="language-select">
+            <option value="javascript">JavaScript / TypeScript</option>
+            <option value="python">Python</option>
+            <option value="sql">SQL Query</option>
+          </select>
+        </div>
+
+        <textarea id="code-input" rows="12" spellcheck="false" placeholder="Collez votre snippet de code à auditer..."></textarea>
+
+        <div class="stats-row">
+          <div class="stat-box">
+            <span class="stat-label">Lignes analysées</span>
+            <span id="line-count" class="stat-val">0</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Audit Engine</span>
+            <span id="scan-time" class="stat-val">0 ms</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Score Santé Code</span>
+            <span id="health-score" class="stat-val score-good">100 / 100</span>
+          </div>
+        </div>
+
+        <button id="audit-btn" class="btn-primary">⚡ Auditer le Code Instantanément</button>
+      </section>
+
+      <section class="audit-results-section">
+        <h2>Rapport d'Audit & Refactoring</h2>
+
+        <div id="issues-container" class="issues-container">
+          <div class="placeholder-text">Aucun problème détecté. Cliquez sur Auditer.</div>
+        </div>
+
+        <div class="card refactor-card">
+          <div class="card-header">
+            <h3>Code Optimisé & Sécurisé (Refactored)</h3>
+            <button id="copy-refactor-btn" class="btn-secondary">📋 Copier</button>
+          </div>
+          <pre id="refactored-code" class="code-block"><code>// Le code refactorisé apparaîtra ici...</code></pre>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
