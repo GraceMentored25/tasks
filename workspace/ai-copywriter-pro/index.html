@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;">
+  <title>AI Copywriter Pro - Studio Marketing</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo-area">
+        <span class="badge">⚡ Bolt High Performance</span>
+        <h1>AI Copywriter Pro</h1>
+      </div>
+      <p class="subtitle">Générateur de contenus marketing haute vitesse optimisé par IA</p>
+    </header>
+
+    <main class="main-layout">
+      <section class="controls-panel">
+        <h2>Configuration de la campagne</h2>
+
+        <div class="form-group">
+          <label for="content-type">Type de contenu</label>
+          <select id="content-type">
+            <option value="linkedin">Post LinkedIn Virale</option>
+            <option value="ad">Annonce Google / Meta Ads</option>
+            <option value="email">Séquence Email Cold Outreach</option>
+            <option value="landing">Accroche Landing Page SEO</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="tone">Tonalité</label>
+          <select id="tone">
+            <option value="professional">Professionnel & Convaincant</option>
+            <option value="enthusiastic">Enthousiaste & Dynamique</option>
+            <option value="urgency">Urgence & Pression Sociale</option>
+            <option value="storytelling">Storytelling & Empathique</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="prompt-input">Sujet / Produit / Proposition de Valeur</label>
+          <textarea id="prompt-input" rows="5" placeholder="Entrez le sujet de votre produit ou service..."></textarea>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-box">
+            <span class="stat-label">Tokens Est.</span>
+            <span id="token-count" class="stat-val">0</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Coût Estimé</span>
+            <span id="cost-estimate" class="stat-val">0.0000 $</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Temps Rendu</span>
+            <span id="render-time" class="stat-val">0 ms</span>
+          </div>
+        </div>
+
+        <button id="generate-btn" class="btn-primary">⚡ Générer le Contenu Instantané</button>
+      </section>
+
+      <section class="preview-panel">
+        <div class="preview-header">
+          <h2>Résultat Marketing</h2>
+          <button id="copy-btn" class="btn-secondary">📋 Copier</button>
+        </div>
+
+        <div id="output-box" class="output-card">
+          <p class="placeholder-text">Saisissez votre sujet pour générer le contenu en temps réel...</p>
+        </div>
+
+        <div class="history-section">
+          <h3>Historique Cachable (LocalStorage)</h3>
+          <ul id="history-list" class="history-list"></ul>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
