@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI SEO & Article Content Generator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo">⚡ AI Content Engine</div>
+      <p class="subtitle">Commercial AI SEO Copywriter & Article Generator</p>
+    </header>
+
+    <main class="grid-layout">
+      <section class="card input-card">
+        <h2>SEO Strategy Config</h2>
+        <form id="seo-form">
+          <div class="form-group">
+            <label for="topic">Target Topic / Keyword</label>
+            <input type="text" id="topic" placeholder="e.g. Best Electric Vehicles 2026" required>
+          </div>
+          <div class="form-group">
+            <label for="tone">Brand Tone</label>
+            <select id="tone">
+              <option value="professional">Professional & Authoritative</option>
+              <option value="engaging">Engaging & Conversational</option>
+              <option value="technical">Technical & Deep Dive</option>
+            </select>
+          </div>
+          <button type="submit" class="btn primary">⚡ Generate Article & Meta</button>
+        </form>
+      </section>
+
+      <section class="card output-card">
+        <h2>Generated SEO Article</h2>
+        <div id="seo-output" class="result-box">
+          <p class="placeholder-text">Enter your keyword strategy on the left to generate an optimized article.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

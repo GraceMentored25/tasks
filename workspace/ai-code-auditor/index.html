@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Code Review & Security Auditor</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo">⚡ AI Code Guard</div>
+      <p class="subtitle">Commercial AI Static Code Review & Vulnerability Scanner</p>
+    </header>
+
+    <main class="grid-layout">
+      <section class="card input-card">
+        <h2>Source Code Snippet</h2>
+        <form id="code-form">
+          <div class="form-group">
+            <label for="language">Language</label>
+            <select id="language">
+              <option value="javascript">JavaScript / TypeScript</option>
+              <option value="python">Python</option>
+              <option value="html">HTML / Template</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="code-input">Code to Audit</label>
+            <textarea id="code-input" rows="8" placeholder="Paste source code here..." required></textarea>
+          </div>
+          <button type="submit" class="btn primary">⚡ Run High-Speed AI Audit</button>
+        </form>
+      </section>
+
+      <section class="card output-card">
+        <h2>Audit Results & Recommendations</h2>
+        <div id="audit-output" class="result-box">
+          <p class="placeholder-text">Paste code on the left and run the audit to detect vulnerabilities and optimization hints.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
