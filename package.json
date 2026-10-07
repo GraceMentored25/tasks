@@ -1,0 +1,11 @@
+{
+  "name": "ai-commercial-mvps",
+  "version": "1.0.0",
+  "description": "Suite of commercial AI web application MVPs",
+  "private": true,
+  "scripts": {
+    "test": "node test-verify.js",
+    "build": "echo 'Building static web apps for GitHub Pages...' && mkdir -p dist && cp -r workspace/* dist/"
+  },
+  "devDependencies": {}
+}
