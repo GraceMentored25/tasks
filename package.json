@@ -1,0 +1,13 @@
+{
+  "name": "ai-workspace-apps",
+  "version": "1.0.0",
+  "description": "Commercial AI MVP Applications Workspace",
+  "type": "module",
+  "scripts": {
+    "test": "node test-verify.js",
+    "build": "node build.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;">
+  <title>Commercial AI Web Applications Workspace Hub</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111827;
+      --accent: #38bdf8;
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --border: #1f2937;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding: 3rem 1.5rem; }
+    .header { max-width: 1000px; margin: 0 auto 3rem auto; text-align: center; }
+    h1 { font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--accent); }
+    p.subtitle { font-size: 1.1rem; color: var(--muted); }
+    .grid { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.75rem; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s, border-color 0.2s; }
+    .card:hover { transform: translateY(-4px); border-color: var(--accent); }
+    .tag { display: inline-block; background: #0369a1; color: #e0f2fe; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; width: fit-content; }
+    .card h2 { font-size: 1.3rem; color: var(--text); margin-bottom: 0.5rem; }
+    .card p { font-size: 0.9rem; color: var(--muted); line-height: 1.5; margin-bottom: 1.25rem; }
+    .price-tag { font-size: 0.85rem; color: #34d399; font-weight: 600; margin-bottom: 1rem; }
+    a.btn { display: inline-block; text-align: center; background: var(--accent); color: #090d16; font-weight: bold; padding: 0.75rem 1.25rem; border-radius: 6px; text-decoration: none; transition: background 0.2s; }
+    a.btn:hover { background: #0284c7; color: white; }
+    footer { max-width: 1000px; margin: 3rem auto 0 auto; text-align: center; font-size: 0.85rem; color: var(--muted); border-top: 1px solid var(--border); padding-top: 1.5rem; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>⚡ Commercial AI Web Apps Workspace</h1>
+    <p class="subtitle">High-performance AI solutions engineered for freelancing & client missions (Malt)</p>
+  </div>
+
+  <div class="grid">
+    <!-- App 1 -->
+    <div class="card">
+      <div>
+        <span class="tag">Malt AI Job Listing</span>
+        <h2>DocuMind AI</h2>
+        <p>Document & PDF Q&A Analysis Assistant. Features fast client-side indexing and memoized answer search.</p>
+        <div class="price-tag">💶 TJM: 550€ - 750€/j | Budget: 3 500€ - 5 000€</div>
+      </div>
+      <a href="ai-doc-qa/index.html" class="btn">Launch Web Application ➔</a>
+    </div>
+
+    <!-- App 2 -->
+    <div class="card">
+      <div>
+        <span class="tag">Malt AI Job Listing</span>
+        <h2>SupportPulse AI</h2>
+        <p>Customer Support Ticket Response Copilot. Features memoized prompt engines and instant draft generation.</p>
+        <div class="price-tag">💶 TJM: 500€ - 700€/j | Budget: 2 800€ - 4 000€</div>
+      </div>
+      <a href="ai-support-copilot/index.html" class="btn">Launch Web Application ➔</a>
+    </div>
+
+    <!-- App 3 -->
+    <div class="card">
+      <div>
+        <span class="tag">Malt AI Job Listing</span>
+        <h2>SEO Content Studio AI</h2>
+        <p>Generative SEO Article & Social Media Studio. Features debounced real-time keyword density scan & multi-channel post creator.</p>
+        <div class="price-tag">💶 TJM: 600€ - 800€/j | Budget: 4 000€ - 6 000€</div>
+      </div>
+      <a href="ai-seo-content-studio/index.html" class="btn">Launch Web Application ➔</a>
+    </div>
+  </div>
+
+  <footer>
+    Built by ⚡ <strong>Bolt Agent</strong> • Performance-optimized client-side web applications ready for deployment.
+  </footer>
+</body>
+</html>

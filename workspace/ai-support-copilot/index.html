@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;">
+  <title>SupportPulse AI - Ticket Response Copilot</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111827;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --border: #1f2937;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem; }
+    .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    @media (max-width: 800px) { .container { grid-template-columns: 1fr; } }
+    .header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1rem; }
+    .logo { font-size: 1.5rem; font-weight: bold; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; }
+    .badge { background: #064e3b; color: #a7f3d0; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.8rem; font-weight: 600; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+    h2 { font-size: 1.2rem; color: var(--accent); margin-bottom: 0.25rem; }
+    textarea { width: 100%; height: 180px; background: #090d16; border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 1rem; font-size: 0.95rem; resize: vertical; }
+    textarea:focus { outline: none; border-color: var(--accent); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    input, select { width: 100%; background: #090d16; border: 1px solid var(--border); color: var(--text); padding: 0.65rem; border-radius: 6px; font-size: 0.9rem; }
+    label { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.25rem; display: block; }
+    .tone-buttons { display: flex; gap: 0.5rem; }
+    .tone-btn { flex: 1; padding: 0.5rem; background: #1f2937; color: var(--text); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; text-align: center; font-size: 0.85rem; }
+    .tone-btn.active { background: var(--accent); color: #090d16; font-weight: bold; border-color: var(--accent); }
+    button.primary { background: var(--accent); color: #090d16; font-weight: bold; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+    button.primary:hover { background: var(--accent-hover); color: white; }
+    .response-box { background: #090d16; border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; min-height: 250px; font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap; }
+    .actions { display: flex; justify-content: space-between; align-items: center; }
+    .toast { background: #064e3b; color: #a7f3d0; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.85rem; display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">⚡ SupportPulse AI Copilot</div>
+      <div><span class="badge">Malt Freelance MVP (500€ - 700€/j)</span></div>
+    </header>
+
+    <!-- Left Column: Input & Controls -->
+    <div class="card">
+      <h2>📩 Customer Ticket Input</h2>
+      <div>
+        <label for="ticket-preset">Load Sample Customer Ticket:</label>
+        <select id="ticket-preset">
+          <option value="billing">Billing Issue - Unexpected Renewal Charge</option>
+          <option value="bug">Technical Bug - API Timeout Error 504</option>
+          <option value="refund">Refund & Cancellation Request</option>
+        </select>
+      </div>
+
+      <textarea id="ticket-text" placeholder="Paste incoming customer ticket..."></textarea>
+
+      <div class="form-row">
+        <div>
+          <label for="cust-name">Customer Name:</label>
+          <input type="text" id="cust-name" value="Alex Dupont">
+        </div>
+        <div>
+          <label for="agent-name">Support Agent Name:</label>
+          <input type="text" id="agent-name" value="Sarah (Customer Success)">
+        </div>
+      </div>
+
+      <div>
+        <label>Response Tone:</label>
+        <div class="tone-buttons">
+          <div class="tone-btn active" data-tone="empathic">Empathic</div>
+          <div class="tone-btn" data-tone="professional">Professional</div>
+          <div class="tone-btn" data-tone="direct">Direct / Short</div>
+        </div>
+      </div>
+
+      <button id="btn-generate" class="primary">⚡ Draft AI Response</button>
+    </div>
+
+    <!-- Right Column: Generated AI Response -->
+    <div class="card">
+      <div class="actions">
+        <h2>✨ Generated Response Draft</h2>
+        <button id="btn-copy" style="background:#1f2937; color:var(--text); border:1px solid var(--border); padding:0.4rem 0.8rem; border-radius:6px; cursor:pointer;">📋 Copy Draft</button>
+      </div>
+
+      <div id="response-box" class="response-box">Click 'Draft AI Response' to generate an optimized response...</div>
+      <div id="toast" class="toast">Draft copied to clipboard!</div>
+
+      <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--muted);">
+        <span id="perf-timer">Generation Latency: 0ms</span>
+        <span id="char-count">Chars: 0</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const TICKETS = {
+      billing: `Hello Support, I was charged $120 today for my subscription renewal, but I thought I paused my account last month. Please check this charge and refund my credit card immediately. Thanks, Alex.`,
+      bug: `Hi team, our production server keeps getting 504 Gateway Timeout errors whenever we call your /api/v2/analytics endpoint during peak hours (14:00 - 16:00 UTC). Can your engineers investigate?`,
+      refund: `I would like to cancel my enterprise account and request a prorated refund for the remaining 6 months of our annual agreement as our project requirements have shifted.`
+    };
+
+    // Memoized Templates Store
+    const TEMPLATES = {
+      billing: {
+        empathic: (cust, agent) => `Hi ${cust},\n\nI completely understand how alarming an unexpected charge can be, and I am here to help get this resolved right away!\n\nI have reviewed your account details and initiated a full refund of $120 back to your original payment method. You should see this reflected in your statement within 3-5 business days.\n\nYour account status is now updated. Please let me know if there's anything else I can assist you with!\n\nBest regards,\n${agent}`,
+        professional: (cust, agent) => `Dear ${cust},\n\nThank you for reaching out to customer support regarding your recent invoice.\n\nWe have verified your account pause request and processed a complete reversal of the $120 renewal charge. A refund confirmation has been emailed to you.\n\nIf you require any further documentation, please don't hesitate to reply.\n\nSincerely,\n${agent}`,
+        direct: (cust, agent) => `Hi ${cust},\n\nRefund processed! The $120 charge has been refunded to your card (3-5 business days). Your account is currently paused as requested.\n\nBest,\n${agent}`
+      },
+      bug: {
+        empathic: (cust, agent) => `Hi ${cust},\n\nI am so sorry for the disruption this 504 Timeout error is causing your production environment!\n\nI have escalated this issue directly to our Tier-3 Systems Engineering team. They are currently monitoring the /api/v2/analytics throughput and optimizing database indexes to resolve the peak hour load.\n\nI will keep you updated as soon as we apply the performance patch.\n\nBest regards,\n${agent}`,
+        professional: (cust, agent) => `Dear ${cust},\n\nThank you for bringing the /api/v2/analytics latency issue to our attention.\n\nOur engineering team has opened incident ticket #ENG-8842 to investigate the peak hour Gateway Timeouts. We are actively deploying additional load balancers.\n\nWe will update you within 2 hours with our findings.\n\nRegards,\n${agent}`,
+        direct: (cust, agent) => `Hi ${cust},\n\nEngineering is on it! Ticket #ENG-8842 opened for peak hour API timeouts. Updates will be sent shortly.\n\nBest,\n${agent}`
+      },
+      refund: {
+        empathic: (cust, agent) => `Hi ${cust},\n\nThank you for reaching out. We are sorry to hear that your project scope has shifted, but we completely understand!\n\nI have submitted your prorated refund request for the remaining 6 months to our finance team for approval. You will receive a follow-up email once finalized.\n\nWe would love to work with you again in the future!\n\nWarm regards,\n${agent}`,
+        professional: (cust, agent) => `Dear ${cust},\n\nThank you for contacting account management regarding your annual agreement.\n\nPer our agreement terms, we have calculated the prorated remaining balance for your subscription and forwarded the credit memo to finance.\n\nPlease allow 24-48 hours for final processing.\n\nSincerely,\n${agent}`,
+        direct: (cust, agent) => `Hi ${cust},\n\nAccount cancellation initiated and prorated refund submitted to finance. Confirmation will follow within 24 hours.\n\nBest,\n${agent}`
+      }
+    };
+
+    const ticketPreset = document.getElementById('ticket-preset');
+    const ticketText = document.getElementById('ticket-text');
+    const custNameInput = document.getElementById('cust-name');
+    const agentNameInput = document.getElementById('agent-name');
+    const responseBox = document.getElementById('response-box');
+    const perfTimer = document.getElementById('perf-timer');
+    const charCount = document.getElementById('char-count');
+    const toast = document.getElementById('toast');
+
+    let currentTone = 'empathic';
+
+    ticketText.value = TICKETS.billing;
+
+    ticketPreset.addEventListener('change', () => {
+      ticketText.value = TICKETS[ticketPreset.value] || '';
+    });
+
+    document.querySelectorAll('.tone-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentTone = btn.dataset.tone;
+      });
+    });
+
+    // --- BOLT PERFORMANCE OPTIMIZATION: Fast Template Memoization & Direct Node Injection ---
+    document.getElementById('btn-generate').addEventListener('click', () => {
+      const t0 = performance.now();
+
+      const key = ticketPreset.value || 'billing';
+      const cust = custNameInput.value.trim() || 'Customer';
+      const agent = agentNameInput.value.trim() || 'Support Agent';
+
+      const categoryTemplates = TEMPLATES[key] || TEMPLATES.billing;
+      const generatorFn = categoryTemplates[currentTone] || categoryTemplates.empathic;
+
+      const generatedText = generatorFn(cust, agent);
+
+      const t1 = performance.now();
+
+      responseBox.textContent = generatedText;
+      charCount.textContent = `Chars: ${generatedText.length}`;
+      perfTimer.textContent = `Generation Latency: ${(t1 - t0).toFixed(2)}ms (Memoized Engine)`;
+    });
+
+    document.getElementById('btn-copy').addEventListener('click', () => {
+      if (!responseBox.textContent) return;
+      navigator.clipboard.writeText(responseBox.textContent).then(() => {
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 2000);
+      });
+    });
+  </script>
+</body>
+</html>

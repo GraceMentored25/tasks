@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;">
+  <title>SEO Studio AI - Article & Social Content Generator</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #151c2c;
+      --accent: #8b5cf6;
+      --accent-hover: #7c3aed;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --border: #1f293d;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem; }
+    .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    @media (max-width: 800px) { .container { grid-template-columns: 1fr; } }
+    .header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1rem; }
+    .logo { font-size: 1.5rem; font-weight: bold; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; }
+    .badge { background: #4c1d95; color: #ddd6fe; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.8rem; font-weight: 600; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+    h2 { font-size: 1.2rem; color: var(--accent); margin-bottom: 0.25rem; }
+    input, textarea, select { width: 100%; background: #0b0f19; border: 1px solid var(--border); color: var(--text); padding: 0.75rem; border-radius: 8px; font-size: 0.95rem; }
+    textarea { height: 200px; resize: vertical; }
+    label { font-size: 0.85rem; color: var(--muted); display: block; margin-bottom: 0.25rem; }
+    .btn-group { display: flex; gap: 0.5rem; }
+    button { background: var(--accent); color: white; border: none; padding: 0.75rem 1.25rem; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    button:hover { background: var(--accent-hover); }
+    button.secondary { background: #1f293d; color: var(--text); }
+    button.secondary:hover { background: #374151; }
+    .seo-score-container { display: flex; align-items: center; justify-content: space-between; background: #0b0f19; padding: 1rem; border-radius: 8px; border: 1px solid var(--border); }
+    .score-circle { width: 50px; height: 50px; border-radius: 50%; background: #065f46; color: #a7f3d0; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.1rem; }
+    .output-box { background: #0b0f19; border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; min-height: 250px; font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap; max-height: 450px; overflow-y: auto; }
+    .kw-tag { display: inline-block; background: #1f293d; color: var(--accent); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; margin-right: 0.4rem; margin-top: 0.4rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">⚡ SEO Content Studio AI</div>
+      <div><span class="badge">Malt Freelance MVP (600€ - 800€/j)</span></div>
+    </header>
+
+    <!-- Left Column: Input Settings & Real-Time Editor -->
+    <div class="card">
+      <h2>📝 SEO Article & Target Topic</h2>
+      <div>
+        <label for="topic-input">Target Topic / Article Title:</label>
+        <input type="text" id="topic-input" value="How AI Agents Are Revolutionizing Software Engineering in 2026">
+      </div>
+
+      <div>
+        <label for="target-kw">Target Keywords (comma-separated):</label>
+        <input type="text" id="target-kw" value="AI agents, software engineering, autonomous coding, devops automation">
+      </div>
+
+      <div>
+        <label for="content-body">Article Draft Body (Real-time SEO Density Scan):</label>
+        <textarea id="content-body" placeholder="Write or paste your article text here..."></textarea>
+      </div>
+
+      <div class="btn-group">
+        <button id="btn-gen-article">⚡ Generate SEO Outline</button>
+        <button id="btn-gen-social" class="secondary">📱 Generate LinkedIn & Twitter Posts</button>
+      </div>
+    </div>
+
+    <!-- Right Column: SEO Analytics & Output -->
+    <div class="card">
+      <h2>📊 Live SEO Metrics & AI Content</h2>
+
+      <div class="seo-score-container">
+        <div>
+          <strong style="color:var(--text); font-size:0.95rem;">SEO Optimization Score</strong>
+          <div style="font-size:0.8rem; color:var(--muted);" id="kw-density-info">Density: 0% | Keyword Matches: 0</div>
+        </div>
+        <div class="score-circle" id="seo-score">78</div>
+      </div>
+
+      <div id="kw-pills">
+        <!-- Render target keywords status here -->
+      </div>
+
+      <div id="output-box" class="output-box">Your generated SEO outline or social media post will appear here...</div>
+
+      <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--muted);">
+        <span id="perf-timer">Scan Latency: 0ms (Debounced Single-Pass)</span>
+        <span id="word-count">Words: 0</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const topicInput = document.getElementById('topic-input');
+    const targetKw = document.getElementById('target-kw');
+    const contentBody = document.getElementById('content-body');
+    const outputBox = document.getElementById('output-box');
+    const seoScore = document.getElementById('seo-score');
+    const kwDensityInfo = document.getElementById('kw-density-info');
+    const kwPills = document.getElementById('kw-pills');
+    const perfTimer = document.getElementById('perf-timer');
+    const wordCount = document.getElementById('word-count');
+
+    // Default sample content
+    contentBody.value = `AI agents are rapidly transforming the landscape of software engineering. Modern development workflows now leverage autonomous coding tools to automate pull requests, refactoring, and devops automation tasks. By deploying AI agents in continuous integration pipelines, teams increase release velocity while maintaining codebase quality.`;
+
+    // --- BOLT PERFORMANCE OPTIMIZATION: Debounced Single-Pass Tokenizer ---
+    let debounceTimer = null;
+
+    contentBody.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(runSEOScan, 150); // 150ms debounce
+    });
+
+    targetKw.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(runSEOScan, 150);
+    });
+
+    // Run initial scan
+    runSEOScan();
+
+    function runSEOScan() {
+      const t0 = performance.now();
+      const text = contentBody.value;
+      const keywords = targetKw.value.split(',').map(k => k.trim().toLowerCase()).filter(Boolean);
+
+      let totalWords = 0;
+      const textLower = text.toLowerCase();
+
+      // Single-pass regex word iterator for high speed
+      const wordRegex = /\b\w+\b/g;
+      while (wordRegex.exec(textLower) !== null) {
+        totalWords++;
+      }
+
+      let matchesCount = 0;
+      let pillsHtml = '';
+
+      keywords.forEach(kw => {
+        if (!kw) return;
+        // Count occurrences
+        const kwRegex = new RegExp('\\b' + escapeRegExp(kw) + '\\b', 'gi');
+        const matches = (textLower.match(kwRegex) || []).length;
+        matchesCount += matches;
+
+        const isFound = matches > 0;
+        pillsHtml += `<span class="kw-tag" style="border: 1px solid ${isFound ? '#059669' : '#b91c1c'}; color: ${isFound ? '#34d399' : '#f87171'};">
+          ${escapeHtml(kw)}: ${matches}x
+        </span>`;
+      });
+
+      kwPills.innerHTML = pillsHtml;
+
+      const density = totalWords > 0 ? ((matchesCount / totalWords) * 100).toFixed(1) : 0;
+      kwDensityInfo.textContent = `Density: ${density}% | Total Matches: ${matchesCount}`;
+      wordCount.textContent = `Words: ${totalWords}`;
+
+      // Calculate simple SEO score index (scale 0-100)
+      let score = 40;
+      if (totalWords > 50) score += 20;
+      if (totalWords > 150) score += 15;
+      if (density >= 1.5 && density <= 4.0) score += 25;
+      else if (density > 0) score += 10;
+      score = Math.min(100, score);
+
+      seoScore.textContent = score;
+      seoScore.style.background = score >= 70 ? '#065f46' : score >= 50 ? '#854d0e' : '#991b1b';
+
+      const t1 = performance.now();
+      perfTimer.textContent = `Scan Latency: ${(t1 - t0).toFixed(2)}ms (Debounced Single-Pass)`;
+    }
+
+    // Button: Generate SEO Outline
+    document.getElementById('btn-gen-article').addEventListener('click', () => {
+      const topic = topicInput.value || 'AI Technology in 2026';
+      const kws = targetKw.value;
+
+      outputBox.textContent = `📌 PROPOSED SEO ARTICLE STRUCTURE & META DIRECTIVES
+
+Title Tag: ${topic} - Comprehensive Guide (2026)
+Meta Description: Learn how ${kws.split(',')[0] || 'AI agents'} are changing production workflows. Strategic insights, performance benchmarks, and best practices.
+
+H1: ${topic}
+
+H2: 1. Introduction & Market Overview
+- Why traditional approaches are shifting towards automated workflows.
+- Core advantages of integrating ${kws.split(',')[1] || 'autonomous solutions'}.
+
+H2: 2. Architectural Blueprint & Key Considerations
+- Step-by-step framework implementation.
+- Overcoming deployment latency and security challenges.
+
+H2: 3. Industry Benchmarks & Case Studies
+- Real-world metrics and performance impacts.
+
+H2: 4. Conclusion & Key Takeaways
+- Next steps for engineering teams.`;
+    });
+
+    // Button: Generate Social Posts
+    document.getElementById('btn-gen-social').addEventListener('click', () => {
+      const topic = topicInput.value;
+      const kws = targetKw.value;
+
+      outputBox.textContent = `🚀 LINKEDIN POST DRAFT:
+--------------------------------------------------
+Is your engineering stack ready for the next wave of automation? 🤖
+
+In our latest deep dive, we explore "${topic}".
+
+Key takeaways:
+1️⃣ Why static pipelines are falling behind
+2️⃣ How ${kws.split(',')[0] || 'AI agents'} accelerate release cycles
+3️⃣ Best practices for security and performance compliance
+
+What is your team's top priority this quarter? Let's discuss in the comments below! 👇
+
+#SoftwareEngineering #TechInnovation #DevOps #AI
+
+
+🐤 TWITTER / X THREAD DRAFT:
+--------------------------------------------------
+1/5 🧵 How is ${topic} transforming modern tech teams? Here's a quick breakdown:
+
+2/5 ⚡ Autonomous workflows reduce developer friction by handling routine tasks in real-time.
+
+3/5 🛡️ Security & compliance remain paramount—always pair automation with robust testing verification.
+
+4/5 📈 Teams report up to 40% faster cycle times when implementing dedicated AI copilots.
+
+5/5 Read full article & strategies here: [Link] #TechNews #AI`;
+    });
+
+    function escapeRegExp(string) {
+      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+  </script>
+</body>
+</html>
