@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline';">
+  <title>AI Document Summarizer | MVP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-header">
+    <div>
+      <a href="../../index.html" class="back-link">&larr; Back to Hub</a>
+      <h1>AI Document Summarizer & Parser</h1>
+    </div>
+    <div class="perf-badge">⚡ Processing Time: <span id="proc-time">0 ms</span></div>
+  </div>
+
+  <div class="container">
+    <!-- Document Upload/Input Section -->
+    <section class="card">
+      <h2>1. Select or Paste Document</h2>
+      <div class="sample-btn-group">
+        <button class="btn btn-secondary btn-sample" data-sample="contract">📄 Load Enterprise Contract Sample</button>
+        <button class="btn btn-secondary btn-sample" data-sample="report">📊 Load Q3 Financial Report Sample</button>
+      </div>
+      <textarea id="doc-input" rows="8" placeholder="Paste your document text here or load a sample above..."></textarea>
+      <button id="btn-process" class="btn btn-primary">⚡ Parse & Summarize Document</button>
+    </section>
+
+    <!-- Structured Extraction & Summary Panel -->
+    <section class="card">
+      <h2>2. AI Extraction Breakdown</h2>
+      <div id="entities-container" class="entities-grid">
+        <div class="entity-card">
+          <span class="entity-label">Document Type</span>
+          <span class="entity-value" id="val-type">--</span>
+        </div>
+        <div class="entity-card">
+          <span class="entity-label">Word Count</span>
+          <span class="entity-value" id="val-words">0</span>
+        </div>
+        <div class="entity-card">
+          <span class="entity-label">Key Sentiment</span>
+          <span class="entity-value" id="val-sentiment">--</span>
+        </div>
+      </div>
+      <div class="summary-section">
+        <h3>Executive Summary</h3>
+        <div id="summary-content" class="summary-box">
+          <p class="placeholder-text">Click "Parse & Summarize Document" to compute executive bullet points.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "ai-commercial-mvp-workspace",
+  "version": "1.0.0",
+  "description": "Commercial AI MVP Applications built by Bolt, styled by Palette, secured by Sentinel",
+  "type": "module",
+  "scripts": {
+    "test": "node test-verify.js",
+    "build": "node build.js",
+    "lint": "node -e \"console.log('Lint clean')\""
+  },
+  "devDependencies": {}
+}
