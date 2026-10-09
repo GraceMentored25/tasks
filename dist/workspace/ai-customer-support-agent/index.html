@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline';">
+  <title>AI Customer Support Agent | MVP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-header">
+    <div>
+      <a href="../../index.html" class="back-link">&larr; Back to Hub</a>
+      <h1>AI Customer Support Agent & Triage</h1>
+    </div>
+    <div class="perf-badge">⚡ Bolt Cache Active (<span id="cache-hit-rate">0%</span> hits)</div>
+  </div>
+
+  <div class="container">
+    <!-- Knowledge Search Section -->
+    <section class="card">
+      <h2>1. RAG Knowledge Search</h2>
+      <p class="subtitle">Instant response retrieval backed by LRU query cache.</p>
+      <div class="search-bar">
+        <input type="text" id="rag-query" placeholder="Search knowledge base (e.g., 'refund policy', 'API limits')...">
+        <span id="search-time" class="time-metric">0 ms</span>
+      </div>
+      <div id="rag-results" class="results-container">
+        <p class="placeholder-text">Type above to test instant RAG lookup...</p>
+      </div>
+    </section>
+
+    <!-- Ticket Generator & Response Simulator -->
+    <section class="card">
+      <h2>2. Support Ticket Auto-Triage</h2>
+      <div class="ticket-actions">
+        <button id="btn-generate-ticket" class="btn btn-primary">⚡ Generate Sample Ticket</button>
+      </div>
+      <div id="active-ticket" class="ticket-box">
+        <p class="placeholder-text">Click "Generate Sample Ticket" to simulate incoming customer requests.</p>
+      </div>
+      <div id="ai-suggestion-box" class="suggestion-box hidden">
+        <div class="box-header">
+          <h3>AI Suggested Draft</h3>
+          <span class="confidence-tag">98% Confidence</span>
+        </div>
+        <textarea id="ai-draft-text" rows="4" readonly></textarea>
+        <button id="btn-send-reply" class="btn btn-success">Send Response</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
