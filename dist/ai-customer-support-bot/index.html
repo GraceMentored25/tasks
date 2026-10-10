@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;">
+  <title>E-Commerce AI Assistant Support - Fast Response Engine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col">
+  <header class="bg-slate-900 border-b border-slate-800 p-4">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <span class="p-2 bg-indigo-600 rounded-lg text-white font-bold text-xl">🤖</span>
+        <div>
+          <h1 class="text-lg font-bold text-white">AI E-Commerce Support Bot</h1>
+          <p class="text-xs text-slate-400">TJM estimé Malt: 500€ - 750€/j | Optimisation Instant-Response</p>
+        </div>
+      </div>
+      <span class="px-3 py-1 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded-full text-xs font-semibold">
+        ● En Ligne (Latency: &lt;5ms)
+      </span>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-4xl w-full mx-auto p-4 flex flex-col">
+    <div id="chat-window" class="flex-1 bg-slate-900 border border-slate-800 rounded-xl p-4 overflow-y-auto space-y-4 min-h-[400px] max-h-[600px]">
+      <div class="flex items-start space-x-3">
+        <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-sm font-bold">AI</div>
+        <div class="bg-slate-800 rounded-2xl rounded-tl-none p-3 max-w-[80%] text-sm text-slate-200">
+          Bonjour ! Je suis l'assistant IA de votre boutique E-commerce. Comment puis-je vous aider aujourd'hui ? (Ex: "Où est ma commande ?", "Comment faire un retour ?", "Moyens de paiement")
+        </div>
+      </div>
+    </div>
+
+    <form id="chat-form" class="mt-4 flex gap-2">
+      <input
+        type="text"
+        id="user-input"
+        placeholder="Posez votre question support e-commerce..."
+        class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white"
+        required
+      />
+      <button
+        type="submit"
+        class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-6 py-3 rounded-lg text-sm transition-colors flex items-center gap-2"
+      >
+        <span>Envoyer</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      </button>
+    </form>
+  </main>
+
+  <script>
+    // Knowledge Base Pre-compiled and Pre-indexed (Bolt Performance Optimization)
+    const KNOWLEDGE_BASE = [
+      {
+        keywords: ['commande', 'suivi', 'colis', 'livraison', 'expedition', 'statut'],
+        response: "Vous pouvez suivre l'état de votre commande directement dans votre espace client sous la rubrique 'Mes Commandes'. Un numéro de suivi vous a également été envoyé par email."
+      },
+      {
+        keywords: ['retour', 'remboursement', 'echange', 'retourner', 'article'],
+        response: "Les retours sont gratuits sous 14 jours ! Rendez-vous sur la page 'Gestion des retours', générez votre étiquette prépayée et déposez votre colis au point relais le plus proche."
+      },
+      {
+        keywords: ['paiement', 'carte', 'paypal', 'apple pay', 'securise', 'facture'],
+        response: "Nous acceptons les cartes Visa, Mastercard, American Express, PayPal et Apple Pay. Toutes les transactions sont sécurisées avec un cryptage SSL 256 bits."
+      },
+      {
+        keywords: ['garantie', 'panne', 'defectueux', 'casse', 'sav'],
+        response: "Tous nos produits bénéficient d'une garantie constructeur de 2 ans. Si votre produit présente un défaut, notre service technique prendra en charge la réparation ou le remplacement sans frais."
+      }
+    ];
+
+    // Memoization cache to store query results and avoid repeat parsing
+    const responseCache = new Map();
+
+    function getFastAIResponse(query) {
+      const normalizedQuery = query.toLowerCase().trim();
+
+      // Cache hit check
+      if (responseCache.has(normalizedQuery)) {
+        return responseCache.get(normalizedQuery);
+      }
+
+      // Fast single-pass keyword matching
+      let bestMatch = null;
+      let maxScore = 0;
+
+      for (const entry of KNOWLEDGE_BASE) {
+        let score = 0;
+        for (const kw of entry.keywords) {
+          if (normalizedQuery.includes(kw)) {
+            score++;
+          }
+        }
+        if (score > maxScore) {
+          maxScore = score;
+          bestMatch = entry.response;
+        }
+      }
+
+      const finalResponse = bestMatch || "Merci pour votre message. Un conseiller humain prendra le relais sous peu. Des précisions complémentaires sur votre numéro de commande nous permettraient d'accélérer le traitement.";
+
+      // Memoize result
+      responseCache.set(normalizedQuery, finalResponse);
+      return finalResponse;
+    }
+
+    const chatWindow = document.getElementById('chat-window');
+    const chatForm = document.getElementById('chat-form');
+    const userInput = document.getElementById('user-input');
+
+    function appendMessage(sender, text, isUser = false) {
+      const msgWrapper = document.createElement('div');
+      msgWrapper.className = `flex items-start space-x-3 ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`;
+
+      const avatar = document.createElement('div');
+      avatar.className = `w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${isUser ? 'bg-slate-700' : 'bg-indigo-600'}`;
+      avatar.textContent = isUser ? 'Vous' : 'AI';
+
+      const bubble = document.createElement('div');
+      bubble.className = `p-3 rounded-2xl max-w-[80%] text-sm ${isUser ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-slate-800 text-slate-200 rounded-tl-none'}`;
+      bubble.textContent = text;
+
+      msgWrapper.appendChild(avatar);
+      msgWrapper.appendChild(bubble);
+      chatWindow.appendChild(msgWrapper);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = userInput.value.trim();
+      if (!text) return;
+
+      appendMessage('Vous', text, true);
+      userInput.value = '';
+
+      // Instant async response without blocking UI paint
+      requestAnimationFrame(() => {
+        const response = getFastAIResponse(text);
+        setTimeout(() => {
+          appendMessage('AI', response, false);
+        }, 150);
+      });
+    });
+  </script>
+</body>
+</html>

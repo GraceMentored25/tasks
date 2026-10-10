@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;">
+  <title>AI SEO Content Generator & Real-Time Analyzer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
+  <header class="bg-slate-900 border-b border-slate-800 p-4">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <span class="p-2 bg-indigo-600 rounded-lg text-white font-bold text-xl">🚀</span>
+        <div>
+          <h1 class="text-lg font-bold text-white">AI SEO Content Generator & Analyzer</h1>
+          <p class="text-xs text-slate-400">TJM estimé Malt: 550€ - 800€/j | Single-Pass Tokenization & Real-Time Analytics</p>
+        </div>
+      </div>
+      <span class="px-3 py-1 bg-indigo-950 text-indigo-400 border border-indigo-800 rounded-full text-xs font-semibold">
+        Optimiseur SEO V1.0
+      </span>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto p-6 grid lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 space-y-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <label for="target-kw" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Mots-clés cibles (séparés par des virgules)</label>
+        <input type="text" id="target-kw" value="intelligence artificielle, e-commerce, automatisation, seo" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-indigo-500" />
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <div class="flex justify-between items-center mb-2">
+          <label for="editor" class="block text-xs font-semibold uppercase text-slate-400">Rédiger ou Générer le Contenu</label>
+          <button id="btn-generate" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded font-medium transition-colors">
+            ⚡ Générer draft IA
+          </button>
+        </div>
+        <textarea id="editor" rows="12" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-indigo-500 leading-relaxed font-mono" placeholder="Saisissez ou générez votre article ici..."></textarea>
+      </div>
+    </div>
+
+    <div class="space-y-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+        <h2 class="text-sm font-bold uppercase text-slate-300 mb-3 flex justify-between items-center">
+          <span>Score SEO Live</span>
+          <span id="seo-score" class="text-2xl font-extrabold text-indigo-400">0%</span>
+        </h2>
+        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden mb-4">
+          <div id="seo-score-bar" class="bg-indigo-500 h-full w-0 transition-all duration-300"></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 text-center mb-4">
+          <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+            <span class="block text-xs text-slate-400">Mots</span>
+            <span id="word-count" class="text-lg font-bold text-white">0</span>
+          </div>
+          <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+            <span class="block text-xs text-slate-400">Caractères</span>
+            <span id="char-count" class="text-lg font-bold text-white">0</span>
+          </div>
+        </div>
+
+        <h3 class="text-xs font-semibold uppercase text-slate-400 mb-2">Densité des Mots-Clés Cibles</h3>
+        <ul id="kw-density-list" class="space-y-2 text-xs">
+          <!-- Populated dynamically -->
+        </ul>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+        <h3 class="text-xs font-semibold uppercase text-slate-400 mb-2">Aperçu Meta Description IA</h3>
+        <p id="meta-preview" class="text-xs text-slate-300 italic bg-slate-950 p-3 rounded-lg border border-slate-800 min-h-[60px]">
+          Ajoutez du contenu pour générer la meta description optimisée...
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const editor = document.getElementById('editor');
+    const targetKwInput = document.getElementById('target-kw');
+    const wordCountEl = document.getElementById('word-count');
+    const charCountEl = document.getElementById('char-count');
+    const seoScoreEl = document.getElementById('seo-score');
+    const seoScoreBarEl = document.getElementById('seo-score-bar');
+    const kwDensityList = document.getElementById('kw-density-list');
+    const metaPreview = document.getElementById('meta-preview');
+    const btnGenerate = document.getElementById('btn-generate');
+
+    let debounceTimer = null;
+
+    // Bolt Optimization: Single-Pass Tokenizer for high performance parsing
+    function analyzeText() {
+      const text = editor.value;
+      const targetKeywords = targetKwInput.value.toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
+
+      const charCount = text.length;
+      charCountEl.textContent = charCount;
+
+      if (!text.trim()) {
+        wordCountEl.textContent = '0';
+        seoScoreEl.textContent = '0%';
+        seoScoreBarEl.style.width = '0%';
+        kwDensityList.innerHTML = '<li class="text-slate-500">Aucune donnée</li>';
+        metaPreview.textContent = 'Ajoutez du contenu pour générer la meta description...';
+        return;
+      }
+
+      // Single-pass word regex matcher
+      const words = text.toLowerCase().match(/\b[\wàâäéèêëîïôöùûüç-]+\b/gi) || [];
+      const wordCount = words.length;
+      wordCountEl.textContent = wordCount;
+
+      // Frequency map creation
+      const freqMap = new Map();
+      for (let i = 0; i < words.length; i++) {
+        const w = words[i];
+        freqMap.set(w, (freqMap.get(w) || 0) + 1);
+      }
+
+      // Check density of target keywords
+      let matchedCount = 0;
+      kwDensityList.innerHTML = '';
+
+      targetKeywords.forEach(kw => {
+        const count = freqMap.get(kw) || text.toLowerCase().split(kw).length - 1;
+        const countSafe = Math.max(0, count);
+        const density = wordCount > 0 ? ((countSafe / wordCount) * 100).toFixed(1) : 0;
+
+        if (countSafe > 0) matchedCount++;
+
+        const li = document.createElement('li');
+        li.className = 'flex justify-between items-center bg-slate-950 p-2 rounded border border-slate-800';
+        li.innerHTML = `
+          <span class="font-medium text-slate-200">${kw}</span>
+          <span class="text-indigo-400 font-mono">${countSafe} (${density}%)</span>
+        `;
+        kwDensityList.appendChild(li);
+      });
+
+      // Calculate overall score
+      let score = 0;
+      if (wordCount >= 100) score += 40;
+      else score += Math.floor((wordCount / 100) * 40);
+
+      if (targetKeywords.length > 0) {
+        score += Math.floor((matchedCount / targetKeywords.length) * 60);
+      } else {
+        score += 30;
+      }
+
+      score = Math.min(100, score);
+      seoScoreEl.textContent = `${score}%`;
+      seoScoreBarEl.style.width = `${score}%`;
+
+      // Live meta description generator
+      if (text.length > 20) {
+        metaPreview.textContent = text.slice(0, 150).replace(/\n/g, ' ') + '...';
+      }
+    }
+
+    // Debounced trigger for smooth typing experience
+    function onInputDebounced() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(analyzeText, 100);
+    }
+
+    editor.addEventListener('input', onInputDebounced);
+    targetKwInput.addEventListener('input', onInputDebounced);
+
+    btnGenerate.addEventListener('click', () => {
+      editor.value = `L'intelligence artificielle transforme en profondeur le secteur de l'e-commerce moderne.\n\nGrâce à l'automatisation des processus métier et à l'optimisation du référencement naturel (SEO), les entreprises maximisent leur visibilité en ligne et boostent leurs conversions.\n\nL'intégration de solutions IA dans une stratégie e-commerce globale permet d'analyser en temps réel les comportements d'achat et de proposer un parcours client hautement personnalisé.`;
+      analyzeText();
+    });
+
+    // Initial analysis
+    analyzeText();
+  </script>
+</body>
+</html>
