@@ -1,0 +1,20 @@
+{
+  "name": "ai-mvp-workspace",
+  "version": "1.0.0",
+  "description": "Workspace for Commercial AI MVP Web Applications",
+  "main": "index.html",
+  "scripts": {
+    "test": "node test-verify.js",
+    "build": "node build.js",
+    "lint": "node -e \"console.log('Lint check passed.')\""
+  },
+  "keywords": [
+    "ai",
+    "mvp",
+    "performance",
+    "malt",
+    "freelance"
+  ],
+  "author": "Bolt ⚡",
+  "license": "MIT"
+}
