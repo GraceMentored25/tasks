@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;">
+  <title>AI Content Repurposer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-6 font-sans">
+  <div class="max-w-5xl mx-auto">
+    <header class="flex items-center justify-between pb-6 mb-6 border-b border-slate-800">
+      <div>
+        <h1 class="text-3xl font-bold text-white flex items-center gap-2">
+          🚀 AI Content Repurposer
+        </h1>
+        <p class="text-slate-400 text-sm mt-1">Transformateur de contenu multi-canal haute performance (Twitter, LinkedIn, Newsletter).</p>
+      </div>
+      <a href="../../index.html" class="text-sm text-indigo-400 hover:text-indigo-300 font-medium">&larr; Retour au catalogue</a>
+    </header>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Input Source Article -->
+      <section class="bg-slate-800/80 border border-slate-700/80 rounded-xl p-5 shadow-lg flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-center mb-3">
+            <h2 class="text-lg font-semibold text-white">Source Blog / Article</h2>
+            <span id="word-count" class="text-xs text-indigo-300 bg-indigo-950/80 border border-indigo-800/50 px-2 py-1 rounded">
+              0 mots | 0 tokens
+            </span>
+          </div>
+          <textarea
+            id="source-text"
+            rows="12"
+            placeholder="Collez ici votre article de blog, communiqué ou compte-rendu..."
+            class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 leading-relaxed resize-none"
+          >L'intelligence artificielle transforme en profondeur la création de contenu B2B. En automatisant les tâches répétitives de synthèse et d'adaptation de formats, les équipes marketing gagnent un temps précieux. Cette révolution permet d'accélérer la diffusion sur LinkedIn, Twitter et les Newsletters d'entreprise tout en maintenant une forte cohérence de marque.</textarea>
+        </div>
+        <div class="mt-4 flex justify-between items-center pt-3 border-t border-slate-700/50">
+          <span id="execution-time" class="text-xs font-mono text-emerald-400">Transform: 0.00ms</span>
+          <button id="btn-repurpose" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors">
+            Générer Déclinaisons ⚡
+          </button>
+        </div>
+      </section>
+
+      <!-- Repurposed Channels -->
+      <section class="bg-slate-800/80 border border-slate-700/80 rounded-xl p-5 shadow-lg flex flex-col">
+        <div class="flex gap-2 border-b border-slate-700 pb-3 mb-4">
+          <button id="tab-twitter" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white">
+            Twitter / X Thread
+          </button>
+          <button id="tab-linkedin" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-700 text-slate-300 hover:bg-slate-600">
+            LinkedIn Post
+          </button>
+          <button id="tab-newsletter" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-700 text-slate-300 hover:bg-slate-600">
+            Email Newsletter
+          </button>
+        </div>
+
+        <div id="output-container" class="bg-slate-900 border border-slate-700 rounded-lg p-4 text-slate-200 text-sm leading-relaxed flex-1 min-h-[250px] whitespace-pre-wrap overflow-y-auto">
+          Appuyez sur "Générer Déclinaisons" pour voir le contenu adapté.
+        </div>
+
+        <div class="mt-4 flex justify-end">
+          <button id="btn-copy-output" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium rounded-lg transition-colors">
+            Copier ce Format
+          </button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="./src/app.js"></script>
+</body>
+</html>

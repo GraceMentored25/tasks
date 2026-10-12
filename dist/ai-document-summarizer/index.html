@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;">
+  <title>AI Document Summarizer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-6 font-sans">
+  <div class="max-w-5xl mx-auto">
+    <header class="flex items-center justify-between pb-6 mb-6 border-b border-slate-800">
+      <div>
+        <h1 class="text-3xl font-bold text-white flex items-center gap-2">
+          📄 AI Document Summarizer & Insights
+        </h1>
+        <p class="text-slate-400 text-sm mt-1">Analyseur de documents techniques et juridiques avec extraction ultra-rapide par motifs pré-compilés.</p>
+      </div>
+      <a href="../../index.html" class="text-sm text-indigo-400 hover:text-indigo-300 font-medium">&larr; Retour au catalogue</a>
+    </header>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Document Input -->
+      <section class="bg-slate-800/80 border border-slate-700/80 rounded-xl p-5 shadow-lg flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-center mb-3">
+            <h2 class="text-lg font-semibold text-white">Document Source (Contrat / Spécification)</h2>
+            <span id="doc-length" class="text-xs text-indigo-300 bg-indigo-950/80 border border-indigo-800/50 px-2 py-1 rounded">
+              0 caractères
+            </span>
+          </div>
+          <textarea
+            id="doc-input"
+            rows="12"
+            placeholder="Collez ici le document juridique, contrat ou cahier des charges..."
+            class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 leading-relaxed resize-none"
+          >ARTICLE 1 - OBJET DU CONTRAT : Le présent contrat de prestation de services informatiques a pour objet la conception et le déploiement d'une application d'intelligence artificielle sur mesure.
+
+ARTICLE 2 - PRIX ET MODALITÉS DE PAIEMENT : Le montant global forfaitaire de la prestation est fixé à 3 500 € HT. Un acompte de 30% sera versé à la signature du bon de commande, et le solde de 70% sera réglé à la livraison finale sous 30 jours fin de mois.
+
+ARTICLE 3 - CONFIDENTIALITÉ ET RGPD : Chacune des parties s'engage à maintenir la stricte confidentialité de toutes les informations techniques, commerciales et financières échangées au cours de la mission.</textarea>
+        </div>
+        <div class="mt-4 flex justify-between items-center pt-3 border-t border-slate-700/50">
+          <span id="scan-perf" class="text-xs font-mono text-emerald-400">Scan speed: 0.00ms</span>
+          <button id="btn-analyze" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors">
+            Synthétiser Document ⚡
+          </button>
+        </div>
+      </section>
+
+      <!-- Analysis Results & Summary -->
+      <section class="bg-slate-800/80 border border-slate-700/80 rounded-xl p-5 shadow-lg flex flex-col justify-between">
+        <div>
+          <h2 class="text-lg font-semibold text-white mb-3">Synthèse & Clauses Clés</h2>
+
+          <!-- Compression Metric Badge -->
+          <div class="mb-4 bg-slate-900/90 border border-slate-700 rounded-lg p-3 flex justify-around text-center">
+            <div>
+              <span class="block text-xs text-slate-400 uppercase">Taux de compression</span>
+              <span id="compression-ratio" class="text-lg font-bold text-indigo-400">0%</span>
+            </div>
+            <div class="border-l border-slate-800 pl-4">
+              <span class="block text-xs text-slate-400 uppercase">Points Clés</span>
+              <span id="bullet-count" class="text-lg font-bold text-emerald-400">0 détectés</span>
+            </div>
+          </div>
+
+          <!-- Bullet Points Result -->
+          <div id="summary-output" class="bg-slate-900 border border-slate-700 rounded-lg p-4 text-slate-200 text-sm leading-relaxed min-h-[200px] overflow-y-auto space-y-2">
+            Cliquez sur "Synthétiser Document" pour générer l'analyse.
+          </div>
+        </div>
+
+        <div class="mt-4 flex justify-end">
+          <button id="btn-copy-summary" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium rounded-lg transition-colors">
+            Copier la Synthèse
+          </button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="./src/app.js"></script>
+</body>
+</html>
