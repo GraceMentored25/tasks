@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
+  <title>Commercial AI Web MVPs Hub</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #111827;
+      --border: #1f2937;
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --accent: #3b82f6;
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 900px;
+      width: 100%;
+    }
+    header {
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+      color: var(--accent);
+    }
+    .card p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+    .card a {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.6rem 1rem;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background: #059669;
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>⚡ Suite de WebApps IA Commerciales</h1>
+      <p style="color: var(--muted);">Projets IA commercialisés sur Malt - Optimisés par Bolt ⚡ (Performance & Speed First)</p>
+    </header>
+
+    <main class="grid">
+      <div class="card">
+        <div>
+          <span class="badge">Malt Ref: 500€ - 750€ / j</span>
+          <h2>Agent IA Support Client</h2>
+          <p>Agent de support multilingue temps réel avec mémoire de requêtes et recherche débouclée.</p>
+        </div>
+        <a href="workspace/ai-support-bot/index.html">Ouvrir l'application →</a>
+      </div>
+
+      <div class="card">
+        <div>
+          <span class="badge">Malt Ref: 600€ - 900€ / j</span>
+          <h2>Analyseur IA de Contrats</h2>
+          <p>Analyse de conformité et détection de clauses de risque par découpage asynchrone (chunking).</p>
+        </div>
+        <a href="workspace/ai-contract-analyzer/index.html">Ouvrir l'application →</a>
+      </div>
+
+      <div class="card">
+        <div>
+          <span class="badge">Malt Ref: 450€ - 700€ / j</span>
+          <h2>Générateur Content SEO IA</h2>
+          <p>Générateur SaaS multi-format avec templates mémoïsés et zéro re-render inutile.</p>
+        </div>
+        <a href="workspace/ai-content-generator/index.html">Ouvrir l'application →</a>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
+  <title>Analyseur IA de Contrats Juridiques</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <h1>🛡️ Analyseur IA de Contrats & Compliance</h1>
+      <span class="badge">Commercial MVP - Malt Ref: 600€-900€/j</span>
+    </header>
+
+    <main class="analyzer-layout">
+      <section class="editor-section">
+        <label for="contract-input"><strong>Texte du Contrat / Document Juridique :</strong></label>
+        <textarea id="contract-input" rows="12" placeholder="Collez votre contrat ici... (ex: clauses de responsabilité, résiliation, confidentialité, pénalités...)"></textarea>
+        <div class="actions">
+          <button id="analyze-btn" class="primary-btn">Lancer l'Analyse IA</button>
+          <span id="status-text" class="status-text">Prêt</span>
+        </div>
+      </section>
+
+      <section class="results-section">
+        <h2>Résultats de l'Analyse</h2>
+        <div class="score-card">
+          <p>Score de Conformité : <strong id="risk-score">-- %</strong></p>
+          <div class="progress-bar"><div id="progress-fill" style="width: 0%;"></div></div>
+        </div>
+
+        <h3>Clauses Détéctées & Risques</h3>
+        <div id="findings-list" class="findings-list">
+          <p class="empty-msg">Aucune analyse effectuée pour le moment.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
