@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
+  <title>Générateur Content Marketing & SEO IA</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <h1>✍️ Générateur Content Marketing IA</h1>
+      <span class="badge">Commercial MVP - Malt Ref: 450€-700€/j</span>
+    </header>
+
+    <main class="generator-layout">
+      <form id="gen-form" class="config-panel">
+        <label for="topic-input"><strong>Sujet ou Mots-Clés :</strong></label>
+        <input type="text" id="topic-input" placeholder="Ex: Lancement d'un logiciel SaaS B2B" required>
+
+        <label for="format-select"><strong>Format du Contenu :</strong></label>
+        <select id="format-select">
+          <option value="linkedin">Post LinkedIn Pro</option>
+          <option value="blog">Article de Blog SEO</option>
+          <option value="newsletter">Newsletter Captivante</option>
+          <option value="ads">Google Ads Hook & Title</option>
+        </select>
+
+        <label for="tone-select"><strong>Tonalité :</strong></label>
+        <select id="tone-select">
+          <option value="prof">Professionnel & Expert</option>
+          <option value="persuade">Convaincant & Vendeur</option>
+          <option value="story">Storytelling Inspirant</option>
+        </select>
+
+        <button type="submit" id="generate-btn" class="primary-btn">⚡ Générer le Contenu</button>
+      </form>
+
+      <section class="output-panel">
+        <div class="output-header">
+          <h2>Contenu Généré</h2>
+          <button id="copy-btn" class="secondary-btn">Copier</button>
+        </div>
+        <div id="output-box" class="output-box">
+          <p class="placeholder">Renseignez le sujet et cliquez sur 'Générer' pour créer votre contenu.</p>
+        </div>
+        <div class="stats-row">
+          <span>Mots : <strong id="word-count">0</strong></span> |
+          <span>Temps de lecture estimé : <strong id="read-time">0 min</strong></span>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
