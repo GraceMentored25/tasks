@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmniCopy AI - E-commerce Product & SEO Copywriter</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+  <div class="max-w-7xl mx-auto px-4 py-6">
+    <!-- Header -->
+    <header class="flex items-center justify-between pb-6 mb-8 border-b border-slate-800">
+      <div class="flex items-center space-x-3">
+        <a href="../../index.html" class="text-slate-400 hover:text-white transition flex items-center text-sm mr-2">
+          ← Back to Hub
+        </a>
+        <span class="text-3xl">🛍️</span>
+        <div>
+          <h1 class="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">OmniCopy AI</h1>
+          <p class="text-xs text-slate-400">E-commerce Multi-Platform Copy Generator & SEO Optimizer (Malt Offer Ref: 600€/day)</p>
+        </div>
+      </div>
+      <div>
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-900/60 text-emerald-300 border border-emerald-700/50">
+          ⚡ Sub-10ms Generation
+        </span>
+      </div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Controls Panel -->
+      <div class="lg:col-span-5 flex flex-col space-y-5">
+        <div class="bg-slate-800/80 rounded-xl p-5 border border-slate-700/60 space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm font-semibold text-slate-200">Product Details Input</h2>
+            <button id="loadSampleBtn" class="text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 px-2.5 py-1 rounded transition">Load Sample</button>
+          </div>
+
+          <div>
+            <label for="productName" class="block text-xs font-medium text-slate-400 mb-1">Product Title / Model</label>
+            <input id="productName" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="e.g. Apex Pro Noise-Canceling Wireless Earbuds">
+          </div>
+
+          <div>
+            <label for="targetKeywords" class="block text-xs font-medium text-slate-400 mb-1">Target SEO Keywords (comma separated)</label>
+            <input id="targetKeywords" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="wireless earbuds, active noise canceling, 40h battery, hi-fi audio">
+          </div>
+
+          <div>
+            <label for="bulletFeatures" class="block text-xs font-medium text-slate-400 mb-1">Key Features & Selling Points</label>
+            <textarea id="bulletFeatures" rows="5" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-slate-200 focus:ring-2 focus:ring-emerald-500 focus:outline-none resize-none" placeholder="- Active noise cancellation up to 45dB&#10;- 40-hour total playtime with USB-C fast charging case&#10;- IPX7 waterproof rating for workout and rain&#10;- Custom 11mm dynamic drivers for deep bass"></textarea>
+          </div>
+
+          <div>
+            <label for="toneSelect" class="block text-xs font-medium text-slate-400 mb-1">Brand Voice & Tone</label>
+            <select id="toneSelect" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              <option value="high-energy">🔥 High-Energy & Persuasive (D2C Direct)</option>
+              <option value="premium">✨ Premium & Luxurious (Apple/Bose style)</option>
+              <option value="minimalist">🌿 Minimalist & Direct (Clean/Modern)</option>
+              <option value="seo-focused">🔍 Amazon SEO & Feature Heavy</option>
+            </select>
+          </div>
+
+          <button id="generateBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-lg transition shadow-lg shadow-emerald-600/20 flex items-center justify-center space-x-2">
+            <span>⚡ Generate SEO Multi-Channel Copy</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Generated Copy Outputs -->
+      <div class="lg:col-span-7 flex flex-col space-y-5">
+        <!-- Execution Header -->
+        <div class="flex items-center justify-between bg-slate-800/80 p-4 rounded-xl border border-slate-700/60">
+          <div>
+            <div class="text-xs text-slate-400">Generation Latency</div>
+            <div id="copyTime" class="text-xl font-bold text-emerald-400">0ms</div>
+          </div>
+          <div>
+            <div class="text-xs text-slate-400">Estimated SEO Keyword Density Score</div>
+            <div id="seoScore" class="text-xl font-bold text-teal-300">0/100</div>
+          </div>
+          <button id="copyAllBtn" class="bg-slate-700 hover:bg-slate-600 text-xs px-3 py-2 rounded text-slate-200 font-medium transition">📋 Copy All Output</button>
+        </div>
+
+        <!-- Channel Cards -->
+        <div class="space-y-4">
+          <!-- Shopify/Web Description -->
+          <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/60 space-y-2">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400">Shopify Product Page Copy</h3>
+              <span class="text-[10px] bg-slate-900 text-slate-400 px-2 py-0.5 rounded border border-slate-800">D2C Web Ready</span>
+            </div>
+            <div id="shopifyOutput" class="text-sm text-slate-300 bg-slate-950 p-3 rounded-lg border border-slate-800 min-h-[90px] font-sans">
+              Click generate to create your optimized Shopify product description.
+            </div>
+          </div>
+
+          <!-- Amazon 5-Point Bullet Points -->
+          <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/60 space-y-2">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400">Amazon 5-Point Feature Bullets</h3>
+              <span class="text-[10px] bg-slate-900 text-slate-400 px-2 py-0.5 rounded border border-slate-800">Amazon A+ Optimized</span>
+            </div>
+            <div id="amazonOutput" class="text-sm text-slate-300 bg-slate-950 p-3 rounded-lg border border-slate-800 min-h-[90px] font-sans whitespace-pre-line">
+              Click generate to construct Amazon bullet points.
+            </div>
+          </div>
+
+          <!-- Google Meta Tag & SEO Title -->
+          <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/60 space-y-2">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-blue-400">Google Search Meta Snippet</h3>
+              <span class="text-[10px] bg-slate-900 text-slate-400 px-2 py-0.5 rounded border border-slate-800">&lt;meta&gt; Tags</span>
+            </div>
+            <div id="seoOutput" class="text-xs text-slate-300 bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1 font-mono">
+              <div><strong class="text-slate-400">Title Tag:</strong> <span id="metaTitle">Pending...</span></div>
+              <div><strong class="text-slate-400">Meta Description:</strong> <span id="metaDesc">Pending...</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SAMPLE = {
+      name: 'AeroPulse ANC Wireless Headphones',
+      keywords: 'wireless headphones, active noise cancelling, studio quality sound, 50h battery',
+      features: `- Hybrid Active Noise Cancellation up to 42dB\n- Ultra-light ergonomic memory foam earcups\n- 50-hour continuous audio playback\n- Multi-device Bluetooth 5.3 connection\n- Quick 10-minute charge gives 4 hours of music`,
+      tone: 'premium'
+    };
+
+    const productName = document.getElementById('productName');
+    const targetKeywords = document.getElementById('targetKeywords');
+    const bulletFeatures = document.getElementById('bulletFeatures');
+    const toneSelect = document.getElementById('toneSelect');
+    const generateBtn = document.getElementById('generateBtn');
+    const loadSampleBtn = document.getElementById('loadSampleBtn');
+    const copyAllBtn = document.getElementById('copyAllBtn');
+
+    const shopifyOutput = document.getElementById('shopifyOutput');
+    const amazonOutput = document.getElementById('amazonOutput');
+    const metaTitle = document.getElementById('metaTitle');
+    const metaDesc = document.getElementById('metaDesc');
+    const copyTime = document.getElementById('copyTime');
+    const seoScore = document.getElementById('seoScore');
+
+    loadSampleBtn.addEventListener('click', () => {
+      productName.value = SAMPLE.name;
+      targetKeywords.value = SAMPLE.keywords;
+      bulletFeatures.value = SAMPLE.features;
+      toneSelect.value = SAMPLE.tone;
+      generateCopy();
+    });
+
+    function generateCopy() {
+      const startTime = performance.now();
+      const title = productName.value.trim() || 'Premium Audio Device';
+      const kw = targetKeywords.value.split(',').map(s => s.trim()).filter(Boolean);
+      const rawFeatures = bulletFeatures.value.split('\n').map(s => s.replace(/^[-*]/, '').trim()).filter(Boolean);
+      const tone = toneSelect.value;
+
+      // Fast pre-compiled generation engine
+      let shopifyText = '';
+      let amazonBullets = [];
+
+      if (tone === 'premium') {
+        shopifyText = `Experience uncompromised sound excellence with the ${title}. Crafted for discerning audiophiles, it seamlessly integrates ${kw[0] || 'cutting-edge technology'} with luxurious comfort. Every detail is engineered to deliver pristine clarity whether you are commuting or working in focus mode.`;
+      } else if (tone === 'high-energy') {
+        shopifyText = `Upgrade your daily routine with ${title}! Powered by ${kw[0] || 'next-gen sound technology'}, this beast delivers pure power, lightning-fast connectivity, and relentless performance for active lifestyles.`;
+      } else if (tone === 'minimalist') {
+        shopifyText = `${title}. Clean aesthetics meet high-performance acoustics. Engineered with ${kw.join(' and ') || 'essential features'} for effortless everyday listening.`;
+      } else {
+        shopifyText = `Buy ${title} with high-performance ${kw.join(', ') || 'features'}. Designed for maximum durability, clarity, and top-tier consumer performance.`;
+      }
+
+      amazonBullets = rawFeatures.map((feat, idx) => `• [FEATURE ${idx + 1}] ${feat.toUpperCase()}: Engineered specifically to enhance daily performance with ${kw[idx % (kw.length || 1)] || 'superior build quality'}.`);
+      if (amazonBullets.length === 0) {
+        amazonBullets = [
+          `• HIGH PERFORMANCE AUDIO: Crystal clear sound output featuring ${kw[0] || 'premium drivers'}.`,
+          `• ALL-DAY COMFORT: Ergonomic lightweight construction for extended daily wear.`,
+          `• LONG BATTERY LIFE: Fast charging technology built for travel.`
+        ];
+      }
+
+      const generatedMetaTitle = `${title} | Shop ${kw[0] || 'Official Store'}`;
+      const generatedMetaDesc = `Discover the all-new ${title}. Featuring ${kw.slice(0, 3).join(', ') || 'top-tier performance'}. Free shipping & 30-day money-back guarantee!`;
+
+      // Keyword score calculation
+      let score = 50;
+      if (title.length > 5) score += 15;
+      if (kw.length >= 2) score += 20;
+      if (rawFeatures.length >= 3) score += 15;
+
+      const elapsed = Math.round((performance.now() - startTime) * 100) / 100;
+
+      // Render
+      shopifyOutput.textContent = shopifyText;
+      amazonOutput.textContent = amazonBullets.join('\n\n');
+      metaTitle.textContent = generatedMetaTitle;
+      metaDesc.textContent = generatedMetaDesc;
+      copyTime.textContent = `${elapsed}ms`;
+      seoScore.textContent = `${score}/100`;
+    }
+
+    generateBtn.addEventListener('click', generateCopy);
+
+    copyAllBtn.addEventListener('click', () => {
+      const fullText = `SHOPIFY DESCRIPTION:\n${shopifyOutput.textContent}\n\nAMAZON BULLETS:\n${amazonOutput.textContent}\n\nSEO TITLE:\n${metaTitle.textContent}\n\nMETA DESC:\n${metaDesc.textContent}`;
+      navigator.clipboard.writeText(fullText);
+      copyAllBtn.textContent = '✅ Copied!';
+      setTimeout(() => copyAllBtn.textContent = '📋 Copy All Output', 2000);
+    });
+  </script>
+</body>
+</html>

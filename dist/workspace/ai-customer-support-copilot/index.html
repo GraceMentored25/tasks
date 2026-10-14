@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PulseSupport AI - Customer Support Copilot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+  <div class="max-w-7xl mx-auto px-4 py-6">
+    <!-- Header -->
+    <header class="flex items-center justify-between pb-6 mb-8 border-b border-slate-800">
+      <div class="flex items-center space-x-3">
+        <a href="../../index.html" class="text-slate-400 hover:text-white transition flex items-center text-sm mr-2">
+          ← Back to Hub
+        </a>
+        <span class="text-3xl">🎧</span>
+        <div>
+          <h1 class="text-2xl font-bold bg-gradient-to-r from-purple-400 to-indigo-300 bg-clip-text text-transparent">PulseSupport AI</h1>
+          <p class="text-xs text-slate-400">Automated Ticket Routing & Response Copilot MVP (Malt Offer Ref: 750€/day)</p>
+        </div>
+      </div>
+      <div>
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-purple-900/60 text-purple-300 border border-purple-700/50">
+          ⚡ Real-time Triage (Sub-2ms)
+        </span>
+      </div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Ticket Queue List -->
+      <div class="lg:col-span-5 flex flex-col space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-semibold text-slate-200">Incoming Support Queue</h2>
+          <span class="text-xs text-purple-400 font-mono" id="queueCount">3 Tickets Pending</span>
+        </div>
+
+        <div id="ticketContainer" class="space-y-3 overflow-y-auto max-h-[580px] pr-1">
+          <!-- Tickets injected via JS -->
+        </div>
+      </div>
+
+      <!-- Active Ticket & Copilot Workspace -->
+      <div class="lg:col-span-7 flex flex-col space-y-5">
+        <!-- AI Intelligence Bar -->
+        <div class="bg-slate-800/80 rounded-xl p-5 border border-slate-700/60 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-700/60 pb-3">
+            <div>
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">AI Classification</span>
+              <h3 id="activeSubject" class="text-base font-bold text-slate-200">Select a ticket from the queue</h3>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span id="priorityBadge" class="px-2.5 py-1 rounded text-xs font-bold bg-slate-700 text-slate-300">-- Priority</span>
+              <span id="categoryBadge" class="px-2.5 py-1 rounded text-xs font-bold bg-slate-700 text-slate-300">-- Category</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 text-xs">
+            <div class="bg-slate-900 p-2.5 rounded border border-slate-800">
+              <span class="text-slate-400 block mb-0.5">Customer Sentiment</span>
+              <span id="sentimentText" class="font-semibold text-slate-200">--</span>
+            </div>
+            <div class="bg-slate-900 p-2.5 rounded border border-slate-800">
+              <span class="text-slate-400 block mb-0.5">Suggested SLA Route</span>
+              <span id="slaText" class="font-semibold text-purple-300">--</span>
+            </div>
+            <div class="bg-slate-900 p-2.5 rounded border border-slate-800">
+              <span class="text-slate-400 block mb-0.5">AI Triage Speed</span>
+              <span id="triageSpeed" class="font-semibold text-emerald-400">0ms</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Copilot Response Editor -->
+        <div class="bg-slate-800/80 rounded-xl p-5 border border-slate-700/60 space-y-4 flex-1 flex flex-col">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-slate-200">AI Suggested Response Draft</h3>
+            <div class="space-x-2">
+              <button id="regenEmpatheticBtn" class="text-xs bg-slate-700 hover:bg-slate-600 text-purple-300 px-2.5 py-1 rounded transition">💙 Empathetic Tone</button>
+              <button id="regenDirectBtn" class="text-xs bg-slate-700 hover:bg-slate-600 text-blue-300 px-2.5 py-1 rounded transition">🎯 Direct & Fast</button>
+            </div>
+          </div>
+
+          <textarea id="responseDraft" rows="8" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-slate-200 font-sans focus:ring-2 focus:ring-purple-500 focus:outline-none resize-none flex-1" placeholder="Select a ticket to review AI generated response draft..."></textarea>
+
+          <div class="flex items-center justify-between pt-2">
+            <span class="text-xs text-slate-400">Ready to send via Support Desk Integration</span>
+            <button id="sendBtn" class="bg-purple-600 hover:bg-purple-500 text-white font-medium px-5 py-2 rounded-lg text-sm transition shadow-lg shadow-purple-600/20 flex items-center space-x-2">
+              <span>🚀 Approve & Send Response</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const INITIAL_TICKETS = [
+      {
+        id: 'T-1001',
+        customer: 'Sarah Connor (Cyberdyne Corp)',
+        email: 'sarah@cyberdyne.com',
+        subject: 'URGENT: Billing overcharge on invoice #9402',
+        message: "Hi, I just noticed an unexpected $450 charge on invoice #9402. Our plan was supposed to be $199/mo. Please issue a refund immediately as our accounting team is locking monthly audits tomorrow!",
+        received: '5 mins ago'
+      },
+      {
+        id: 'T-1002',
+        customer: 'Marcus Vance',
+        email: 'marcus@vancetech.io',
+        subject: 'API Webhooks returning 500 status code',
+        message: "Hey team, all our incoming webhook endpoints started returning 500 errors around 14:00 UTC. Here is our error stack trace payload: Error 500 Internal Server Error at /v1/events.",
+        received: '18 mins ago'
+      },
+      {
+        id: 'T-1003',
+        customer: 'Elena Rostova',
+        email: 'elena@designcraft.app',
+        subject: 'Feature Request: Dark mode for export modal',
+        message: "Love the app so far! Would it be possible to add a dark mode toggle specifically for the PDF export modal? It can get quite bright during late night design sessions.",
+        received: '42 mins ago'
+      }
+    ];
+
+    let activeTicket = null;
+
+    const ticketContainer = document.getElementById('ticketContainer');
+    const queueCount = document.getElementById('queueCount');
+    const activeSubject = document.getElementById('activeSubject');
+    const priorityBadge = document.getElementById('priorityBadge');
+    const categoryBadge = document.getElementById('categoryBadge');
+    const sentimentText = document.getElementById('sentimentText');
+    const slaText = document.getElementById('slaText');
+    const triageSpeed = document.getElementById('triageSpeed');
+    const responseDraft = document.getElementById('responseDraft');
+    const sendBtn = document.getElementById('sendBtn');
+    const regenEmpatheticBtn = document.getElementById('regenEmpatheticBtn');
+    const regenDirectBtn = document.getElementById('regenDirectBtn');
+
+    // High performance O(1) keyword classification
+    function triageTicket(ticket) {
+      const startTime = performance.now();
+      const text = (ticket.subject + ' ' + ticket.message).toLowerCase();
+
+      let priority = 'MEDIUM';
+      let category = 'General Inquiry';
+      let sentiment = 'Neutral 😐';
+      let sla = 'Tier 1 Support (24h SLA)';
+
+      if (text.includes('urgent') || text.includes('overcharge') || text.includes('refund') || text.includes('500 error')) {
+        priority = 'HIGH';
+      }
+
+      if (text.includes('billing') || text.includes('invoice') || text.includes('refund') || text.includes('charge')) {
+        category = 'Billing & Payments';
+        sentiment = 'Frustrated / Urgent 😡';
+        sla = 'Billing Operations (1h SLA)';
+      } else if (text.includes('error') || text.includes('webhook') || text.includes('bug') || text.includes('500')) {
+        category = 'Technical / API Bug';
+        sentiment = 'Concerned 😟';
+        sla = 'Devops & Tier 2 Engineering (2h SLA)';
+      } else if (text.includes('feature') || text.includes('dark mode') || text.includes('request')) {
+        category = 'Feature Request';
+        sentiment = 'Positive / Constructive 😊';
+        sla = 'Product Feedback Queue';
+      }
+
+      const elapsed = Math.round((performance.now() - startTime) * 100) / 100;
+
+      return {
+        priority,
+        category,
+        sentiment,
+        sla,
+        elapsedMs: elapsed
+      };
+    }
+
+    function generateDraft(ticket, triage, tone = 'empathetic') {
+      const name = ticket.customer.split(' ')[0];
+
+      if (triage.category === 'Billing & Payments') {
+        if (tone === 'empathetic') {
+          return `Hi ${name},\n\nThank you for bringing invoice #9402 to our attention. I completely understand your urgency regarding monthly audits, and I apologize for any distress this charge caused.\n\nI have flagged this directly with our Senior Billing Manager. We are reviewing the $450 charge right now and will issue any applicable credit back to your payment method within 1-2 business hours.\n\nBest regards,\nCustomer Success Team`;
+        } else {
+          return `Hi ${name},\n\nWe received your request regarding invoice #9402. Our billing team is currently processing the review for the $450 line item. We will update you with refund confirmation within 1 hour.\n\nRegards,\nSupport Desk`;
+        }
+      } else if (triage.category === 'Technical / API Bug') {
+        return `Hi ${name},\n\nThank you for submitting the error trace regarding webhooks returning 500 status codes. Our engineering team has been notified and is currently investigating our event pipeline.\n\nWe will post an update here as soon as a fix is deployed to production.\n\nBest,\nDeveloper Relations`;
+      } else {
+        return `Hi ${name},\n\nThank you so much for the feedback! Dark mode for the PDF export modal is a great idea. I have logged this request with our design & frontend product teams for evaluation.\n\nCheers,\nProduct Support`;
+      }
+    }
+
+    function selectTicket(ticket) {
+      activeTicket = ticket;
+      const triage = triageTicket(ticket);
+
+      activeSubject.textContent = `[${ticket.id}] ${ticket.subject}`;
+
+      // Badges
+      priorityBadge.textContent = triage.priority + ' PRIORITY';
+      priorityBadge.className = triage.priority === 'HIGH'
+        ? 'px-2.5 py-1 rounded text-xs font-bold bg-red-950 text-red-300 border border-red-800'
+        : 'px-2.5 py-1 rounded text-xs font-bold bg-blue-950 text-blue-300 border border-blue-800';
+
+      categoryBadge.textContent = triage.category;
+      sentimentText.textContent = triage.sentiment;
+      slaText.textContent = triage.sla;
+      triageSpeed.textContent = triage.elapsedMs + 'ms';
+
+      responseDraft.value = generateDraft(ticket, triage, 'empathetic');
+
+      // Highlight selected ticket card
+      renderQueue();
+    }
+
+    function renderQueue() {
+      queueCount.textContent = `${INITIAL_TICKETS.length} Tickets Pending`;
+      ticketContainer.innerHTML = INITIAL_TICKETS.map(t => {
+        const triage = triageTicket(t);
+        const isActive = activeTicket && activeTicket.id === t.id;
+        const cardBg = isActive ? 'bg-purple-950/40 border-purple-500' : 'bg-slate-800/80 border-slate-700/60 hover:bg-slate-800';
+
+        return `
+          <div onclick="selectTicketById('${t.id}')" class="p-4 rounded-xl border ${cardBg} cursor-pointer transition space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono text-purple-400 font-semibold">${t.id}</span>
+              <span class="text-[10px] text-slate-400">${t.received}</span>
+            </div>
+            <h4 class="text-sm font-bold text-slate-200 line-clamp-1">${t.subject}</h4>
+            <p class="text-xs text-slate-400 line-clamp-2">${t.message}</p>
+            <div class="flex items-center space-x-2 pt-1">
+              <span class="text-[10px] px-2 py-0.5 rounded ${triage.priority === 'HIGH' ? 'bg-red-950 text-red-300 border border-red-800' : 'bg-slate-900 text-slate-400'}">${triage.priority}</span>
+              <span class="text-[10px] bg-slate-900 text-slate-400 px-2 py-0.5 rounded border border-slate-800">${triage.category}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.selectTicketById = function(id) {
+      const found = INITIAL_TICKETS.find(t => t.id === id);
+      if (found) selectTicket(found);
+    };
+
+    regenEmpatheticBtn.addEventListener('click', () => {
+      if (activeTicket) {
+        const triage = triageTicket(activeTicket);
+        responseDraft.value = generateDraft(activeTicket, triage, 'empathetic');
+      }
+    });
+
+    regenDirectBtn.addEventListener('click', () => {
+      if (activeTicket) {
+        const triage = triageTicket(activeTicket);
+        responseDraft.value = generateDraft(activeTicket, triage, 'direct');
+      }
+    });
+
+    sendBtn.addEventListener('click', () => {
+      if (!activeTicket) return;
+      alert(`Response approved and sent to ${activeTicket.email}!`);
+      // Remove ticket from queue
+      const idx = INITIAL_TICKETS.findIndex(t => t.id === activeTicket.id);
+      if (idx !== -1) {
+        INITIAL_TICKETS.splice(idx, 1);
+        activeTicket = INITIAL_TICKETS[0] || null;
+        if (activeTicket) {
+          selectTicket(activeTicket);
+        } else {
+          activeSubject.textContent = 'All tickets resolved!';
+          responseDraft.value = '';
+          renderQueue();
+        }
+      }
+    });
+
+    // Init
+    selectTicket(INITIAL_TICKETS[0]);
+  </script>
+</body>
+</html>

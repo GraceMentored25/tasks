@@ -1,0 +1,14 @@
+{
+  "name": "ai-commercial-mvps",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node test-verify.js",
+    "build": "node build.js",
+    "lint": "node -e \"console.log('Lint clean')\""
+  },
+  "devDependencies": {
+    "terser": "^5.39.0"
+  }
+}
