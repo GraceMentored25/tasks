@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LexiGuard AI - Legal Contract & Risk Analyzer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(226, 232, 240, 0.8); }
+    .risk-high { border-left: 4px solid #ef4444; background-color: #fef2f2; }
+    .risk-medium { border-left: 4px solid #f59e0b; background-color: #fffbeb; }
+    .risk-low { border-left: 4px solid #10b981; background-color: #ecfdf5; }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+  <div class="max-w-7xl mx-auto px-4 py-6">
+    <!-- Header -->
+    <header class="flex items-center justify-between pb-6 mb-8 border-b border-slate-800">
+      <div class="flex items-center space-x-3">
+        <a href="../../index.html" class="text-slate-400 hover:text-white transition flex items-center text-sm mr-2">
+          ← Back to Hub
+        </a>
+        <span class="text-3xl">⚖️</span>
+        <div>
+          <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">LexiGuard AI</h1>
+          <p class="text-xs text-slate-400">Automated Legal Contract Audit & Risk Analysis MVP (Malt Offer Ref: 700€/day)</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-900/60 text-blue-300 border border-blue-700/50">
+          ⚡ Latency Optimized (Memoized & Cached)
+        </span>
+      </div>
+    </header>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Input Panel -->
+      <div class="lg:col-span-6 flex flex-col space-y-4">
+        <div class="flex items-center justify-between">
+          <label for="contractText" class="text-sm font-semibold text-slate-300">Contract Text / Agreement Input</label>
+          <div class="space-x-2">
+            <button id="loadSampleBtn" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded transition">Load Master Services Agreement Sample</button>
+            <button id="clearBtn" class="text-xs bg-slate-800 hover:bg-red-900/40 text-slate-400 hover:text-red-300 px-3 py-1.5 rounded transition">Clear</button>
+          </div>
+        </div>
+        <textarea id="contractText" rows="18" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-4 text-slate-200 text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:outline-none transition resize-none" placeholder="Paste legal contract text here..."></textarea>
+
+        <div class="flex items-center justify-between pt-2">
+          <span id="charCount" class="text-xs text-slate-500">0 characters | 0 clauses</span>
+          <button id="analyzeBtn" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-lg font-medium shadow-lg shadow-blue-600/20 transition flex items-center space-x-2">
+            <span>⚡ Run Instant AI Analysis</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Results Panel -->
+      <div class="lg:col-span-6 flex flex-col space-y-6">
+        <!-- Summary Dashboard -->
+        <div class="bg-slate-800/80 rounded-xl p-5 border border-slate-700/60 shadow-xl">
+          <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Risk Assessment Overview</h2>
+          <div class="grid grid-cols-3 gap-4 text-center">
+            <div class="bg-slate-900/80 p-4 rounded-lg border border-slate-800">
+              <div class="text-xs text-slate-400 mb-1">Overall Risk Score</div>
+              <div id="riskScore" class="text-3xl font-extrabold text-slate-300">--</div>
+            </div>
+            <div class="bg-slate-900/80 p-4 rounded-lg border border-slate-800">
+              <div class="text-xs text-slate-400 mb-1">High Risk Flags</div>
+              <div id="highRiskCount" class="text-3xl font-extrabold text-red-400">0</div>
+            </div>
+            <div class="bg-slate-900/80 p-4 rounded-lg border border-slate-800">
+              <div class="text-xs text-slate-400 mb-1">Execution Speed</div>
+              <div id="executionTime" class="text-3xl font-extrabold text-emerald-400">0ms</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Clause Findings -->
+        <div class="flex-1 bg-slate-800/80 rounded-xl p-5 border border-slate-700/60 flex flex-col min-h-[360px]">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-semibold text-slate-300">Audited Clauses & Recommendations</h2>
+            <span id="cacheBadge" class="hidden text-xs bg-emerald-950 text-emerald-300 border border-emerald-800 px-2 py-0.5 rounded">⚡ Served from local memory cache</span>
+          </div>
+
+          <div id="resultsList" class="space-y-3 overflow-y-auto max-h-[420px] pr-1">
+            <div class="text-center text-slate-500 py-12 text-sm">
+              Paste or load a contract on the left to display AI risk extraction.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sample Legal Contract Text
+    const SAMPLE_CONTRACT = `MASTER SERVICES AGREEMENT
+
+1. INDEMNIFICATION AND LIABILITY
+To the fullest extent permitted by law, Contractor agrees to fully indemnify, defend, and hold harmless the Client, its officers, and affiliates from and against any and all claims, losses, damages, liabilities, and expenses without any limitation of liability cap.
+
+2. TERM AND AUTOMATIC RENEWAL
+This Agreement shall automatically renew for successive terms of 24 months each unless Contractor provides written notice of non-renewal at least 120 days prior to the expiration of the current term.
+
+3. NON-COMPETE RESTRICTIONS
+During the Term and for a period of three (3) years thereafter, Contractor shall not engage in any business activity, directly or indirectly, that competes with Client anywhere worldwide.
+
+4. INTELLECTUAL PROPERTY RIGHTS
+Client shall own all rights, title, and interest in and to all work product, intellectual property, ideas, and concepts developed by Contractor under this Agreement upon creation.
+
+5. PAYMENT AND INVOICING
+Client shall remit payment within 90 days from the date of receipt of a valid invoice. Late payments shall not accrue interest or penalties.`;
+
+    // Fast Client-Side Performance Cache
+    const analysisCache = new Map();
+
+    // DOM Elements
+    const contractText = document.getElementById('contractText');
+    const loadSampleBtn = document.getElementById('loadSampleBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const charCount = document.getElementById('charCount');
+    const riskScore = document.getElementById('riskScore');
+    const highRiskCount = document.getElementById('highRiskCount');
+    const executionTime = document.getElementById('executionTime');
+    const resultsList = document.getElementById('resultsList');
+    const cacheBadge = document.getElementById('cacheBadge');
+
+    // Utility: Simple Hash Code Generator for Fast Caching
+    function hashString(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = (hash << 5) - hash + str.charCodeAt(i);
+        hash |= 0;
+      }
+      return hash.toString();
+    }
+
+    // Bolt Optimization: High-performance clause analyzer with memoization
+    function analyzeContract(text) {
+      const startTime = performance.now();
+      const trimmed = text.trim();
+
+      if (!trimmed) {
+        return {
+          score: '--',
+          highRisks: 0,
+          clauses: [],
+          executionMs: 0
+        };
+      }
+
+      const textHash = hashString(trimmed);
+      if (analysisCache.has(textHash)) {
+        const cached = analysisCache.get(textHash);
+        cached.fromCache = true;
+        cached.executionMs = Math.round((performance.now() - startTime) * 100) / 100;
+        return cached;
+      }
+
+      // Rule-based high performance AI parsing rules
+      const rawClauses = trimmed.split(/\n\n+/);
+      let highCount = 0;
+      let totalRiskPoints = 0;
+
+      const analyzedClauses = rawClauses.map((clauseText, idx) => {
+        let level = 'LOW';
+        let category = 'General Standard';
+        let issue = 'Standard provision with balanced legal obligations.';
+        let recommendation = 'No action required.';
+
+        const lower = clauseText.toLowerCase();
+
+        if (lower.includes('indemnify') || lower.includes('without any limitation') || lower.includes('no cap')) {
+          level = 'HIGH';
+          category = 'Unlimited Liability & Indemnity';
+          issue = 'Contains unlimited liability or broad indemnification clauses exposing full asset risk.';
+          recommendation = 'Request a liability cap limited to 1x to 2x total contract value.';
+          highCount++;
+          totalRiskPoints += 30;
+        } else if (lower.includes('automatically renew') || lower.includes('24 months') || lower.includes('120 days')) {
+          level = 'HIGH';
+          category = 'Restrictive Renewal Terms';
+          issue = 'Unusually long auto-renewal term (24 months) or strict notice window (120 days).';
+          recommendation = 'Negotiate notice window down to 30 days and 12-month renewal periods.';
+          highCount++;
+          totalRiskPoints += 25;
+        } else if (lower.includes('non-compete') || lower.includes('competes with client') || lower.includes('worldwide')) {
+          level = 'HIGH';
+          category = 'Broad Non-Compete Scope';
+          issue = 'Worldwide 3-year non-compete clause may restrict future business operations.';
+          recommendation = 'Limit scope strictly to direct client competitors and reduce duration to 6-12 months.';
+          highCount++;
+          totalRiskPoints += 25;
+        } else if (lower.includes('90 days') || lower.includes('no interest')) {
+          level = 'MEDIUM';
+          category = 'Extended Payment Term';
+          issue = '90-day payment term is significantly longer than standard commercial terms (Net 30).';
+          recommendation = 'Propose Net 30 or Net 45 payment terms with late payment interest.';
+          totalRiskPoints += 15;
+        } else {
+          totalRiskPoints += 5;
+        }
+
+        return {
+          id: idx + 1,
+          text: clauseText,
+          level,
+          category,
+          issue,
+          recommendation
+        };
+      });
+
+      const maxPossible = rawClauses.length * 30;
+      const calculatedScore = Math.min(100, Math.round((totalRiskPoints / (maxPossible || 1)) * 100));
+
+      const result = {
+        score: calculatedScore > 65 ? calculatedScore + '/100 (HIGH)' : calculatedScore + '/100 (MODERATE)',
+        highRisks: highCount,
+        clauses: analyzedClauses,
+        fromCache: false,
+        executionMs: Math.round((performance.now() - startTime) * 100) / 100
+      };
+
+      // Cache result
+      analysisCache.set(textHash, result);
+      return result;
+    }
+
+    function renderResults(result) {
+      riskScore.textContent = result.score;
+      highRiskCount.textContent = result.highRisks;
+      executionTime.textContent = result.executionMs + 'ms';
+
+      if (result.fromCache) {
+        cacheBadge.classList.remove('hidden');
+      } else {
+        cacheBadge.classList.add('hidden');
+      }
+
+      if (!result.clauses || result.clauses.length === 0) {
+        resultsList.innerHTML = `
+          <div class="text-center text-slate-500 py-12 text-sm">
+            Paste or load a contract on the left to display AI risk extraction.
+          </div>`;
+        return;
+      }
+
+      resultsList.innerHTML = result.clauses.map(c => {
+        let badgeClass = 'bg-emerald-950 text-emerald-300 border-emerald-800';
+        let cardClass = 'risk-low';
+
+        if (c.level === 'HIGH') {
+          badgeClass = 'bg-red-950 text-red-300 border-red-800';
+          cardClass = 'risk-high';
+        } else if (c.level === 'MEDIUM') {
+          badgeClass = 'bg-amber-950 text-amber-300 border-amber-800';
+          cardClass = 'risk-medium';
+        }
+
+        return `
+          <div class="p-4 rounded-lg bg-slate-900 border border-slate-800 ${cardClass} space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-300">${c.category}</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${badgeClass}">${c.level} RISK</span>
+            </div>
+            <p class="text-xs text-slate-300 font-mono bg-slate-950/80 p-2 rounded border border-slate-800/80">${c.text}</p>
+            <div class="text-xs text-slate-400"><strong>Flag:</strong> ${c.issue}</div>
+            <div class="text-xs text-blue-400"><strong>Recommendation:</strong> ${c.recommendation}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleAnalysis() {
+      const text = contractText.value;
+      const res = analyzeContract(text);
+      renderResults(res);
+    }
+
+    // Input stats & live update listener
+    contractText.addEventListener('input', () => {
+      const len = contractText.value.length;
+      const clauseNum = contractText.value.trim() ? contractText.value.trim().split(/\n\n+/).length : 0;
+      charCount.textContent = `${len} characters | ${clauseNum} clauses`;
+    });
+
+    loadSampleBtn.addEventListener('click', () => {
+      contractText.value = SAMPLE_CONTRACT;
+      contractText.dispatchEvent(new Event('input'));
+      handleAnalysis();
+    });
+
+    clearBtn.addEventListener('click', () => {
+      contractText.value = '';
+      contractText.dispatchEvent(new Event('input'));
+      renderResults({ score: '--', highRisks: 0, clauses: [], executionMs: 0 });
+    });
+
+    analyzeBtn.addEventListener('click', handleAnalysis);
+  </script>
+</body>
+</html>
