@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com;">
+  <title>AI Multi-Channel Content Studio</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo">
+      <span class="logo-icon">🚀✍️</span>
+      <h1>AI Content Studio</h1>
+    </div>
+    <div class="badge">Commercial MVP (450€/j TJM)</div>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <h2>1. Sujet & Tonalité</h2>
+      <div class="form-group">
+        <label for="topic">Sujet principal / Idée brute</label>
+        <textarea id="topic" rows="5" placeholder="ex: L'importance d'optimiser les performances web pour booster le taux de conversion e-commerce de 25%..."></textarea>
+      </div>
+      <div class="form-group">
+        <label for="tone">Tonalité IA</label>
+        <select id="tone">
+          <option value="expert">💡 Expert / Lead Technique</option>
+          <option value="b2b">👔 Direct / Business B2B</option>
+          <option value="storyteller">📖 Storytelling engagé</option>
+        </select>
+      </div>
+      <button id="btn-generate" class="btn btn-primary">⚡ Générer le Contenu Multi-Canaux</button>
+    </section>
+
+    <section class="panel">
+      <h2>2. Aperçu des Formats</h2>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="linkedin">LinkedIn</button>
+        <button class="tab-btn" data-tab="twitter">Twitter / X Thread</button>
+        <button class="tab-btn" data-tab="newsletter">Newsletter / Blog</button>
+      </div>
+      <div class="output-preview">
+        <div id="content-linkedin" class="tab-content active">Remplissez le sujet et cliquez sur Générer.</div>
+        <div id="content-twitter" class="tab-content">Remplissez le sujet et cliquez sur Générer.</div>
+        <div id="content-newsletter" class="tab-content">Remplissez le sujet et cliquez sur Générer.</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "ai-commercial-mvps-hub",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Commercial AI MVP Web Applications Hub built by Bolt ⚡",
+  "type": "module",
+  "scripts": {
+    "test": "node test-verify.js",
+    "build": "rm -rf dist && mkdir -p dist && cp index.html dist/ && cp -r workspace dist/"
+  },
+  "devDependencies": {}
+}
