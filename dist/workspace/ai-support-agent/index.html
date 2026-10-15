@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com;">
+  <title>AI Support Agent & RAG Simulator</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo">
+      <span class="logo-icon">🤖💬</span>
+      <h1>AI Support Agent & RAG Simulator</h1>
+    </div>
+    <div class="badge">Commercial MVP (600€/j TJM)</div>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <h2>1. Base de Connaissance (RAG)</h2>
+      <div class="form-group">
+        <label for="kb-doc">Documents FAQ / Knowledge Base</label>
+        <textarea id="kb-doc" rows="6" placeholder="Document 1: Politique de remboursement sous 14 jours...&#10;Document 2: Horaires du support du lundi au vendredi 9h-18h..."></textarea>
+      </div>
+      <div class="form-group">
+        <label for="kb-search">Recherche en direct dans les documents</label>
+        <input type="text" id="kb-search" placeholder="Tapez une question pour tester la recherche sémantique...">
+      </div>
+      <div id="search-results" class="results-box">Tapez votre recherche ci-dessus...</div>
+    </section>
+
+    <section class="panel">
+      <h2>2. Widget Chatbot Support</h2>
+      <div class="chat-box" id="chat-messages">
+        <div class="msg system">Assistant IA configuré et prêt. Poser une question sur la base de connaissances.</div>
+      </div>
+      <form id="chat-form" class="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Posez votre question support..." required>
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com;">
+  <title>AI Resume & ATS Studio</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo">
+      <span class="logo-icon">📄⚡</span>
+      <h1>AI Resume & ATS Studio</h1>
+    </div>
+    <div class="badge">Commercial MVP (500€/j TJM)</div>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <h2>1. Fiche Poste & Offre (ATS)</h2>
+      <div class="form-group">
+        <label for="job-title">Intitulé du poste</label>
+        <input type="text" id="job-title" placeholder="ex: Lead Developer Fullstack React/Node">
+      </div>
+      <div class="form-group">
+        <label for="job-desc">Description de l'offre (Mots-clés ATS)</label>
+        <textarea id="job-desc" rows="6" placeholder="Collez l'offre d'emploi ici..."></textarea>
+      </div>
+      <div class="ats-score-box">
+        <span>Score de Match ATS :</span>
+        <strong id="ats-score-value">0%</strong>
+        <div class="progress-bar"><div id="ats-progress" class="progress-fill"></div></div>
+      </div>
+      <div id="missing-keywords" class="keywords-tags"></div>
+    </section>
+
+    <section class="panel">
+      <h2>2. Profil & Générateur IA</h2>
+      <div class="form-group">
+        <label for="user-resume">Expérience & Réalisations actuelles</label>
+        <textarea id="user-resume" rows="6" placeholder="Ex: Développé des API REST, géré une équipe de 5 personnes..."></textarea>
+      </div>
+      <div class="actions">
+        <button id="btn-optimize-bullets" class="btn btn-primary">⚡ Optimiser puces CV avec l'IA</button>
+        <button id="btn-gen-cover" class="btn btn-secondary">✉️ Générer Lettre de Motivation</button>
+      </div>
+      <div class="output-box">
+        <h3>Résultat IA</h3>
+        <div id="ai-output" class="content-preview">Cliquez sur un bouton pour générer le contenu optimisé.</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
