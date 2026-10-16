@@ -1,0 +1,11 @@
+{
+  "name": "ai-commercial-mvps",
+  "version": "1.0.0",
+  "description": "Commercial AI MVP Web Applications Workspace",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node test-verify.js",
+    "build": "node build.js"
+  }
+}
