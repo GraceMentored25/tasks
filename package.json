@@ -1,0 +1,11 @@
+{
+  "name": "ai-commercial-mvp-workspace",
+  "version": "1.0.0",
+  "description": "Commercial AI MVP web applications suite built by Bolt, Palette, and Sentinel.",
+  "type": "module",
+  "scripts": {
+    "test": "node test-verify.js",
+    "build": "node build.js"
+  },
+  "devDependencies": {}
+}
