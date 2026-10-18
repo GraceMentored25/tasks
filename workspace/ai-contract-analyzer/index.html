@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Contract Analyzer</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #2563eb;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --border: #cbd5e1;
+    }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    header {
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+    .badge {
+      display: inline-block;
+      background: #fef3c7;
+      color: #92400e;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    textarea {
+      width: 100%;
+      height: 140px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+      resize: vertical;
+    }
+    button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    .result-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+    .risk-high { color: #dc2626; font-weight: bold; }
+    .risk-medium { color: #d97706; font-weight: bold; }
+    .risk-low { color: #16a34a; font-weight: bold; }
+    .clause-list { margin-top: 10px; padding-left: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge">Malt MVP • 600€ - 850€/j</span>
+      <h1>AI Contract Analyzer 📜</h1>
+      <p>Analyse automatique de conformité et détection de risques juridiques dans les contrats.</p>
+    </header>
+
+    <main>
+      <label for="contract-input"><strong>Texte du contrat commercial :</strong></label>
+      <textarea id="contract-input" placeholder="Collez le texte du contrat ici (ex: clauses de responsabilité, résiliation, propriété intellectuelle)..."></textarea>
+      <button id="analyze-btn">Lancer l'Analyse Juridique</button>
+
+      <div class="result-card" id="output-card" style="display: none;">
+        <h3>Rapport d'Analyse</h3>
+        <p>Score de Risque global : <span id="risk-score"></span></p>
+        <h4>Points d'attention détectés :</h4>
+        <ul id="clauses-list" class="clause-list"></ul>
+        <div style="font-size: 12px; color: #64748b; margin-top: 12px;" id="perf-metrics"></div>
+      </div>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
