@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data: https:;">
+  <title>AI Support Copilot ⚡</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: #334155;
+      --success: #10b981;
+      --warning: #f59e0b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--text); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+    header { background: #020617; border-bottom: 1px solid var(--border); padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { font-size: 1.25rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+    .badge { background: rgba(59, 130, 246, 0.2); color: var(--accent); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; }
+    .container { display: flex; flex: 1; overflow: hidden; }
+    .sidebar { width: 340px; border-right: 1px solid var(--border); background: var(--card); display: flex; flex-direction: column; }
+    .search-bar { padding: 1rem; border-bottom: 1px solid var(--border); }
+    .search-bar input { width: 100%; padding: 0.6rem; border-radius: 6px; border: 1px solid var(--border); background: #0f172a; color: #fff; }
+    .ticket-list { overflow-y: auto; flex: 1; }
+    .ticket-item { padding: 1rem; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s; }
+    .ticket-item:hover, .ticket-item.active { background: #334155; }
+    .ticket-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; }
+    .ticket-meta { font-size: 0.8rem; color: var(--muted); display: flex; justify-content: space-between; }
+    .main-content { flex: 1; display: flex; flex-direction: column; padding: 1.5rem; overflow-y: auto; gap: 1.5rem; }
+    .panel { background: var(--card); border-radius: 8px; border: 1px solid var(--border); padding: 1.25rem; }
+    .panel-title { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+    .ticket-body { line-height: 1.6; color: #cbd5e1; white-space: pre-line; }
+    .ai-summary-box { background: rgba(30, 58, 138, 0.3); border: 1px solid var(--accent); border-radius: 6px; padding: 1rem; margin-top: 1rem; }
+    .tag { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+    .tag-urgency-high { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    .tag-urgency-normal { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+    .actions { display: flex; gap: 0.75rem; margin-top: 1rem; }
+    button { background: var(--accent); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+    button:hover { background: var(--accent-hover); }
+    textarea { width: 100%; height: 120px; padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); background: #0f172a; color: white; margin-top: 0.5rem; resize: vertical; }
+    .stat-bar { font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem; display: flex; gap: 1rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>⚡ Support Copilot AI <span class="badge">Commercial MVP</span></h1>
+    <div id="cache-stats" style="font-size:0.85rem; color: var(--muted)">Cache hits: 0</div>
+  </header>
+
+  <div class="container">
+    <div class="sidebar">
+      <div class="search-bar">
+        <input type="text" id="ticket-search" placeholder="Filtrer les tickets..." />
+      </div>
+      <div class="ticket-list" id="ticket-list"></div>
+    </div>
+
+    <div class="main-content">
+      <div class="panel" id="ticket-detail">
+        <div class="panel-title">
+          <span id="detail-subject">Sélectionnez un ticket</span>
+          <span id="detail-tag" class="tag tag-urgency-normal">-</span>
+        </div>
+        <p id="detail-author" style="font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem;"></p>
+        <div class="ticket-body" id="detail-body">Veuillez choisir un ticket dans le panneau latéral pour générer les analyses NLP.</div>
+
+        <div class="ai-summary-box" id="ai-box" style="display: none;">
+          <h4 style="color: var(--accent); margin-bottom: 0.5rem;">⚡ Résumé IA & Analyse Sentiment</h4>
+          <p id="ai-summary" style="font-size: 0.9rem; margin-bottom: 0.5rem;"></p>
+          <div class="stat-bar" id="ai-metrics"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">
+          <span>Générateur de Réponse Intelligente</span>
+          <button id="btn-generate">⚡ Générer Réponse IA</button>
+        </div>
+        <textarea id="ai-response" placeholder="La réponse générée par l'IA apparaîtra ici..."></textarea>
+        <div class="actions">
+          <button id="btn-send" style="background: var(--success);">Envoyer la réponse</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ⚡ Bolt Performance Optimization: LRU Cache implementation
+    class MemoryLRUCache {
+      constructor(capacity = 50) {
+        this.capacity = capacity;
+        this.cache = new Map();
+        this.hits = 0;
+      }
+      get(key) {
+        if (!this.cache.has(key)) return null;
+        const val = this.cache.get(key);
+        this.cache.delete(key);
+        this.cache.set(key, val);
+        this.hits++;
+        this.updateUI();
+        return val;
+      }
+      set(key, val) {
+        if (this.cache.has(key)) this.cache.delete(key);
+        else if (this.cache.size >= this.capacity) {
+          const oldestKey = this.cache.keys().next().value;
+          this.cache.delete(oldestKey);
+        }
+        this.cache.set(key, val);
+      }
+      updateUI() {
+        const el = document.getElementById('cache-stats');
+        if (el) el.textContent = `Cache hits: ${this.hits}`;
+      }
+    }
+
+    const aiCache = new MemoryLRUCache(30);
+
+    // Mock dataset
+    const tickets = [
+      { id: 'TCK-101', client: 'Jean Dupont', subject: 'Erreur d’intégration API Webhook', priority: 'Haute', content: 'Bonjour,\nNos webhooks retournent une erreur 500 depuis la mise à jour de ce matin. Notre production est impactée et nous ne recevons plus les notifications d’achat.' },
+      { id: 'TCK-102', client: 'Claire Martin', subject: 'Demande de facturation annuelle', priority: 'Normale', content: 'Bonjour l’équipe,\nPouvons-nous passer de l’abonnement mensuel au tarif annuel pour bénéficier de la réduction entreprise ? Merci d’avance.' },
+      { id: 'TCK-103', client: 'Marc Vance', subject: 'Réinitialisation mot de passe bloquée', priority: 'Haute', content: 'Impossible de recevoir le lien de réinitialisation de mot de passe par mail. J’ai vérifié les spams. Pouvez-vous débloquer mon compte ?' }
+    ];
+
+    let selectedTicket = null;
+
+    // ⚡ Bolt Optimization: Debounce function to minimize re-renders
+    function debounce(fn, delay = 300) {
+      let timer;
+      return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+      };
+    }
+
+    function renderTicketList(items) {
+      const listEl = document.getElementById('ticket-list');
+      const fragment = document.createDocumentFragment();
+
+      items.forEach(t => {
+        const div = document.createElement('div');
+        div.className = `ticket-item ${selectedTicket?.id === t.id ? 'active' : ''}`;
+        div.innerHTML = `
+          <div class="ticket-title">${t.subject}</div>
+          <div class="ticket-meta">
+            <span>${t.client}</span>
+            <span>${t.id}</span>
+          </div>
+        `;
+        div.addEventListener('click', () => selectTicket(t));
+        fragment.appendChild(div);
+      });
+
+      listEl.innerHTML = '';
+      listEl.appendChild(fragment);
+    }
+
+    function selectTicket(t) {
+      selectedTicket = t;
+      document.getElementById('detail-subject').textContent = `${t.id}: ${t.subject}`;
+      document.getElementById('detail-author').textContent = `Client: ${t.client}`;
+      document.getElementById('detail-body').textContent = t.content;
+
+      const tag = document.getElementById('detail-tag');
+      tag.textContent = t.priority;
+      tag.className = `tag ${t.priority === 'Haute' ? 'tag-urgency-high' : 'tag-urgency-normal'}`;
+
+      // Trigger AI Analysis with LRU cache check
+      const cacheKey = `summary-${t.id}`;
+      const cached = aiCache.get(cacheKey);
+
+      const aiBox = document.getElementById('ai-box');
+      const summaryEl = document.getElementById('ai-summary');
+      const metricsEl = document.getElementById('ai-metrics');
+      aiBox.style.display = 'block';
+
+      if (cached) {
+        summaryEl.textContent = cached.summary;
+        metricsEl.textContent = `⚡ Calculé en ${cached.latency}ms (Récupéré du Cache LRU)`;
+        document.getElementById('ai-response').value = cached.response;
+      } else {
+        const start = performance.now();
+        // Simulate NLP AI processing
+        setTimeout(() => {
+          const latency = Math.round(performance.now() - start);
+          const summary = `Priorité: ${t.priority}. Problème principal: ${t.subject.toLowerCase()}. Sentiment client: Préoccupé/Urgent.`;
+          const response = `Bonjour ${t.client.split(' ')[0]},\n\nMerci de nous avoir contactés concernant "${t.subject}".\nNous avons pris en charge votre demande (${t.id}) et notre équipe technique traite le dossier immédiatement.\n\nCordialement,\nL’équipe Support Client.`;
+
+          const result = { summary, response, latency };
+          aiCache.set(cacheKey, result);
+
+          summaryEl.textContent = summary;
+          metricsEl.textContent = `⚡ Temps d'exécution IA: ${latency}ms (Mise en cache)`;
+          document.getElementById('ai-response').value = response;
+        }, 120);
+      }
+
+      renderTicketList(tickets);
+    }
+
+    // Debounced search handler
+    const handleSearch = debounce((e) => {
+      const q = e.target.value.toLowerCase();
+      const filtered = tickets.filter(t => t.subject.toLowerCase().includes(q) || t.client.toLowerCase().includes(q));
+      renderTicketList(filtered);
+    }, 250);
+
+    document.getElementById('ticket-search').addEventListener('input', handleSearch);
+
+    document.getElementById('btn-generate').addEventListener('click', () => {
+      if (!selectedTicket) return;
+      selectTicket(selectedTicket);
+    });
+
+    document.getElementById('btn-send').addEventListener('click', () => {
+      if (!selectedTicket) alert('Veuillez d\'abord sélectionner un ticket.');
+      else alert(`Réponse envoyée pour le ticket ${selectedTicket.id} !`);
+    });
+
+    // Initial render
+    renderTicketList(tickets);
+    if (tickets.length > 0) selectTicket(tickets[0]);
+  </script>
+</body>
+</html>
