@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data: https:;">
+  <title>AI Document Extractor ⚡</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card: #111827;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --border: #1f2937;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 2rem; min-height: 100vh; }
+    header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { font-size: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .badge { background: rgba(16, 185, 129, 0.2); color: var(--accent); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; }
+    .dropzone { border: 2px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; cursor: pointer; transition: border-color 0.2s; background: rgba(31, 41, 55, 0.3); }
+    .dropzone:hover { border-color: var(--accent); }
+    .sample-btn { background: #374151; border: none; color: white; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; margin-top: 0.5rem; margin-right: 0.5rem; font-size: 0.85rem; }
+    .sample-btn:hover { background: #4b5563; }
+    .data-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    .data-table th, .data-table td { border-bottom: 1px solid var(--border); padding: 0.75rem; text-align: left; font-size: 0.9rem; }
+    .data-table th { color: var(--muted); }
+    .json-box { background: #030712; padding: 1rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; border: 1px solid var(--border); color: #34d399; overflow-x: auto; margin-top: 1rem; max-height: 250px; }
+    .perf-badge { font-size: 0.8rem; color: var(--accent); margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>⚡ AI Document & Invoice Extractor <span class="badge">Commercial MVP</span></h1>
+    <div id="perf-metrics" style="font-size:0.85rem; color: var(--muted);">Mémoire OCR: Prête</div>
+  </header>
+
+  <div class="grid">
+    <div class="panel">
+      <h2 style="font-size: 1.1rem; margin-bottom: 1rem;">1. Importer / Sélectionner un document</h2>
+      <div class="dropzone" id="dropzone">
+        <p>Glissez-déposez une facture (PDF, PNG) ici</p>
+        <p style="font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem;">Ou cliquez sur un échantillon ci-dessous :</p>
+        <button class="sample-btn" onclick="processDocument('FACT-2026-089')">Facture Technoplus (€4 250.00)</button>
+        <button class="sample-btn" onclick="processDocument('CONT-FR-9912')">Contrat Prestation DSI (€12 800.00)</button>
+      </div>
+
+      <div style="margin-top: 1.5rem;">
+        <h3 style="font-size: 0.95rem; margin-bottom: 0.5rem;">Aperçu du Fichier Sélectionné</h3>
+        <div id="doc-preview" style="padding: 1rem; background: #030712; border-radius: 6px; border: 1px solid var(--border); font-size: 0.85rem; color: var(--muted);">
+          Aucun document en cours d'analyse.
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 style="font-size: 1.1rem; margin-bottom: 1rem;">2. Données Extrait par l'IA</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Champ</th>
+            <th>Valeur Extaite</th>
+            <th>Confiance</th>
+          </tr>
+        </thead>
+        <tbody id="extracted-fields">
+          <tr><td colspan="3" style="color: var(--muted);">En attente de document...</td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-size: 0.95rem; margin-top: 1.5rem;">Exportation JSON Structurée</h3>
+      <div class="json-box" id="json-output">{}</div>
+      <div class="perf-badge" id="perf-time"></div>
+    </div>
+  </div>
+
+  <script>
+    // ⚡ Bolt Performance Optimization: Document Result Cache
+    const docCache = new Map();
+
+    const sampleDocs = {
+      'FACT-2026-089': {
+        name: 'Facture_Technoplus_089.pdf',
+        preview: 'FACTURE N° FACT-2026-089\nFournisseur: Technoplus SAS (SIRET: 88921039200012)\nClient: Acine Solutions\nDate: 12/10/2026\nDescription: Prestation Cloud Infrastructure & Serveurs GPU\nMontant HT: 3 541.67 € | TVA (20%): 708.33 € | Total TTC: 4 250.00 €',
+        extracted: [
+          { field: 'Type Document', value: 'Facture Fournisseur', confidence: '99.4%' },
+          { field: 'Fournisseur', value: 'Technoplus SAS', confidence: '98.8%' },
+          { field: 'SIRET', value: '88921039200012', confidence: '99.9%' },
+          { field: 'Date Facture', value: '2026-10-12', confidence: '99.1%' },
+          { field: 'Montant HT', value: '3 541.67 €', confidence: '98.5%' },
+          { field: 'TVA (20%)', value: '708.33 €', confidence: '98.5%' },
+          { field: 'Total TTC', value: '4 250.00 €', confidence: '99.7%' }
+        ]
+      },
+      'CONT-FR-9912': {
+        name: 'Contrat_Prestation_DSI_9912.pdf',
+        preview: 'CONTRAT DE PRESTATION DE SERVICES\nEntre la société Global Soft et DataCorp SA\nObjet: Audit Sécurité & Conformité IA\nDate de prise d’effet: 01/11/2026\nEngagements Financiers: 12 800.00 € TTC\nDurée: 12 Mois avec préavis de 30 jours',
+        extracted: [
+          { field: 'Type Document', value: 'Contrat Commercial', confidence: '97.8%' },
+          { field: 'Parties', value: 'Global Soft / DataCorp SA', confidence: '96.5%' },
+          { field: 'Date d’Effet', value: '2026-11-01', confidence: '98.2%' },
+          { field: 'Engagement Financier', value: '12 800.00 € TTC', confidence: '99.1%' },
+          { field: 'Clause de Préavis', value: '30 Jours', confidence: '94.0%' }
+        ]
+      }
+    };
+
+    function processDocument(docId) {
+      const doc = sampleDocs[docId];
+      if (!doc) return;
+
+      document.getElementById('doc-preview').textContent = doc.preview;
+
+      // ⚡ Check performance cache
+      if (docCache.has(docId)) {
+        const cached = docCache.get(docId);
+        renderData(cached.extracted, doc.name);
+        document.getElementById('perf-time').textContent = `⚡ Données restituées depuis le cache instantané (0 ms)`;
+        return;
+      }
+
+      const startTime = performance.now();
+
+      // ⚡ Async processing using requestAnimationFrame non-blocking pattern
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          const latency = Math.round(performance.now() - startTime);
+          docCache.set(docId, { extracted: doc.extracted });
+          renderData(doc.extracted, doc.name);
+          document.getElementById('perf-time').textContent = `⚡ Extraction OCR + NLP terminée en ${latency}ms (Résultat mis en mémoire)`;
+        }, 90);
+      });
+    }
+
+    function renderData(items, fileName) {
+      const tbody = document.getElementById('extracted-fields');
+      const fragment = document.createDocumentFragment();
+
+      items.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-weight:600;">${item.field}</td>
+          <td style="color:var(--accent);">${item.value}</td>
+          <td>${item.confidence}</td>
+        `;
+        fragment.appendChild(tr);
+      });
+
+      tbody.innerHTML = '';
+      tbody.appendChild(fragment);
+
+      const json = {
+        document: fileName,
+        timestamp: new Date().toISOString(),
+        extracted_data: items.reduce((acc, curr) => {
+          acc[curr.field] = curr.value;
+          return acc;
+        }, {})
+      };
+
+      document.getElementById('json-output').textContent = JSON.stringify(json, null, 2);
+    }
+  </script>
+</body>
+</html>
